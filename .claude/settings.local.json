@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :platform-gateway:dependencies --configuration runtimeClasspath)",
+      "Bash(find:*)",
+      "Bash(grep -i \"spring.application.name\" platform-gateway/resource/*.yml)"
+    ]
+  }
+}
