@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: platform-gateway
   cloud:
     nacos:
       server-addr: ${NACOS_ADDR:127.0.0.1:8848}
@@ -12,8 +14,8 @@ spring:
         namespace: ${NACOS_NAMESPACE:public}
         file-extension: yaml
         # 🔑 核心修正：extension-configs 是列表（复数），必须使用数组格式
+        # 扩展配置：读取额外的 Nacos 配置文件
         extension-configs:
           - data-id: security.properties
             group: ${NACOS_GROUP:DEFAULT_GROUP}
-            refresh: true  # 修正：原 refreshEnabled 是非标准旧属性
-            file-extension: properties
+            refresh: true
