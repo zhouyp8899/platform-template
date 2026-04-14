@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.zzl.platform.common'
+dependencies {
+    api libs.hutool.all
+    api libs.jasypt.spring.boot
+
+    // 日志 API（不引入具体实现）
+    compileOnly 'org.slf4j:slf4j-api'
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}

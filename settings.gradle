@@ -1,0 +1,6 @@
+rootProject.name = 'platform-template'
+include 'platform-common-core'
+include 'platform-common-web'
+include 'platform-common-db'
+include 'platform-gateway'
+include 'platform-auth-service'

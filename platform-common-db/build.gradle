@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.zzl.platform.common'
+
+dependencies {
+    api project(':platform-common-core')
+    api libs.mybatis.plus.spring.boot3.starter  // ⚠️ 必须带 boot3
+    api libs.druid.spring.boot.v3.starter        // ⚠️ 必须带 boot3
+    api libs.mysql.connector.j
+    api libs.mybatis.plus.jsqlparser
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}

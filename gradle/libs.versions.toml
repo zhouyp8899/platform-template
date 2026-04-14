@@ -1,0 +1,41 @@
+[versions]
+jdk = "21"
+spring-boot = "3.3.13"
+spring-cloud = "2023.0.4"
+spring-cloud-alibaba = "2023.0.1.3"
+spring-dependency-management = "1.1.6"
+spring-cloud-bootstrap = "4.1.2"
+mysql = "9.6.0"
+mybatis-plus = "3.5.16"
+druid = "1.2.23"
+jasypt = "3.0.5"
+lombok = "1.18.42"
+hutool = "5.8.44"
+fastjson2 = "2.1.1"
+
+[libraries]
+# bom 统一管理
+spring-boot-bom = {module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot"}
+spring-cloud-bom = {module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud"}
+spring-cloud-alibaba-bom = {module = "com.alibaba.cloud:spring-cloud-alibaba-dependencies", version.ref = "spring-cloud-alibaba"}
+
+# 核心依赖
+spring-boot-starter-web = {module = "org.springframework.boot:spring-boot-starter-web"}
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-cloud-starter-bootstrap = { module = "org.springframework.cloud:spring-cloud-starter-bootstrap", version.ref = "spring-cloud-bootstrap" }
+nacos-config = { module = "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config" }
+nacos-discovery = { module = "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery" }
+spring-cloud-starter-gateway = { module = "org.springframework.cloud:spring-cloud-starter-gateway" }
+
+# 数据层（注意使用 boot3-starter）
+mybatis-plus-spring-boot3-starter = { module = "com.baomidou:mybatis-plus-spring-boot3-starter", version.ref = "mybatis-plus" }
+mybatis-plus-jsqlparser = { module = "com.baomidou:mybatis-plus-jsqlparser", version.ref = "mybatis-plus" }
+druid-spring-boot-v3-starter = { module = "com.alibaba:druid-spring-boot-3-starter", version.ref = "druid" }
+mysql-connector-j = { module = "com.mysql:mysql-connector-j",version.ref = "mysql" }
+
+# 工具类
+jasypt-spring-boot = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "jasypt" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+hutool-all = { module = "cn.hutool:hutool-all", version.ref = "hutool" }
+fastjson2 = { module = "com.alibaba:fastjson2", version.ref = "fastjson2" }

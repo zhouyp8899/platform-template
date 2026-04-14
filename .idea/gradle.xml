@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/platform-auth-service" />
+            <option value="$PROJECT_DIR$/platform-common-core" />
+            <option value="$PROJECT_DIR$/platform-common-db" />
+            <option value="$PROJECT_DIR$/platform-common-web" />
+            <option value="$PROJECT_DIR$/platform-gateway" />
+          </set>
+        </option>
+        <option name="myGradleHome" value="D:\Program Files\gradle-8.10.2" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

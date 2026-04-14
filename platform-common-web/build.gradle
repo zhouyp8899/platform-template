@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.zzl.platform.common'
+dependencies {
+    api project(':platform-common-core')
+    api libs.spring.boot.starter.web
+    api libs.spring.boot.starter.validation
+    api libs.spring.boot.starter.actuator
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}

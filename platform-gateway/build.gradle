@@ -1,0 +1,26 @@
+plugins { id 'org.springframework.boot' }
+
+group = 'com.zzl.platform.gw'
+dependencies {
+    implementation project(':platform-common-core')
+    implementation libs.spring.cloud.starter.gateway
+    implementation libs.spring.cloud.starter.bootstrap
+    implementation libs.nacos.config
+    implementation libs.nacos.discovery
+    implementation libs.jasypt.spring.boot
+
+    // 如需 Lombok 等编译期工具
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['main']
+        }
+        resources {
+            srcDirs = ['resource']
+        }
+    }
+}
