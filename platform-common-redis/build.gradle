@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.zzl.platform.common'
+
+dependencies {
+    api project(':platform-common-core')
+
+    // Redis 核心
+    api libs.spring.boot.starter.data.redis
+    api libs.redisson.spring.boot.starter
+    // 👇 新增：确保 RedisTemplate 支持 java.time
+    api libs.jackson.jsr310
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}
+
+test {
+    useJUnitPlatform()
+}

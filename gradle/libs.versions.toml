@@ -12,6 +12,7 @@ jasypt = "3.0.5"
 lombok = "1.18.42"
 hutool = "5.8.44"
 fastjson2 = "2.1.1"
+redisson = "3.27.2"
 
 [libraries]
 # bom 统一管理
@@ -39,3 +40,13 @@ jasypt-spring-boot = { module = "com.github.ulisesbocchio:jasypt-spring-boot-sta
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 hutool-all = { module = "cn.hutool:hutool-all", version.ref = "hutool" }
 fastjson2 = { module = "com.alibaba:fastjson2", version.ref = "fastjson2" }
+
+# Redis 核心依赖
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+redisson-spring-boot-starter = { module = "org.redisson:redisson-spring-boot-starter", version.ref = "redisson" }
+lettuce-core = { module = "io.lettuce:lettuce-core" }  # 由 starter 传递，可选显式声明
+
+# ... 其他 Jackson 依赖
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+# 👇 新增：Java 8 时间模块（版本由 BOM 托管，无需写版本号）
+jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
