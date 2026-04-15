@@ -3,7 +3,9 @@
     "allow": [
       "Bash(./gradlew :platform-gateway:dependencies --configuration runtimeClasspath)",
       "Bash(find:*)",
-      "Bash(grep -i \"spring.application.name\" platform-gateway/resource/*.yml)"
+      "Bash(grep -i \"spring.application.name\" platform-gateway/resource/*.yml)",
+      "Bash(./gradlew :platform-common-redis:compileJava:*)",
+      "Bash(./gradlew dependencies:*)"
     ]
   }
 }
