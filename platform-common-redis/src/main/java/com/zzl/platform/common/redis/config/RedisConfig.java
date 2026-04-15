@@ -8,12 +8,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -29,6 +29,7 @@ import java.time.Duration;
 @EnableCaching
 @EnableConfigurationProperties(com.zzl.platform.common.redis.properties.RedisProperties.class)
 @ConditionalOnProperty(prefix = "platform.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@RefreshScope
 public class RedisConfig {
 
     /**
@@ -37,6 +38,7 @@ public class RedisConfig {
      */
     @Bean
     @ConditionalOnMissingBean
+    @RefreshScope
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         log.info("Initializing RedisTemplate with JSON serializer");
         RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -54,17 +56,6 @@ public class RedisConfig {
 
         template.afterPropertiesSet();
         return template;
-    }
-
-    /**
-     * 配置StringRedisTemplate
-     * 用于字符串类型的Redis操作
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
-        log.info("Initializing StringRedisTemplate");
-        return new StringRedisTemplate(connectionFactory);
     }
 
     /**

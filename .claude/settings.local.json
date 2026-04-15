@@ -5,7 +5,14 @@
       "Bash(find:*)",
       "Bash(grep -i \"spring.application.name\" platform-gateway/resource/*.yml)",
       "Bash(./gradlew :platform-common-redis:compileJava:*)",
-      "Bash(./gradlew dependencies:*)"
+      "Bash(./gradlew dependencies:*)",
+      "WebSearch",
+      "Bash(./gradlew :platform-gateway:build:*)",
+      "Bash(xargs wc:*)",
+      "Bash(./gradlew :platform-gateway:compileJava:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(xargs grep:*)",
+      "Bash(./gradlew build:*)"
     ]
   }
 }

@@ -1,2 +1,83 @@
 server:
   port: 7100
+
+platform:
+  redis:
+    enabled: true
+    lock:
+      wait-time: 30
+      lease-time: 30
+    cache:
+      default-expire: 3600
+  gateway:
+    # 鉴权配置
+    auth-enabled: true
+    # 限流配置
+    rate-limit-enabled: true
+    # 日志配置
+    log-enabled: true
+    # 黑白名单配置
+    black-white-list-enabled: true
+    # 监控配置
+    metrics-enabled: true
+
+spring:
+  application:
+    name: platform-gateway
+  cloud:
+    gateway:
+      # 服务发现配置
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      # 全局跨域配置
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: "*"
+            allowed-methods: "*"
+            allowed-headers: "*"
+            allow-credentials: true
+            max-age: 3600
+      # 全局超时配置
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 5s
+  # Redis配置（从Nacos的security.properties读取）
+  data:
+    redis:
+      host: ${redis.host:localhost}
+      port: ${redis.port:6379}
+      password: ${redis.password:}
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+# Actuator监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.zzl.platform.gw: DEBUG
+    org.springframework.cloud.gateway: DEBUG

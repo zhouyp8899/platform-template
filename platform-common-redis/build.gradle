@@ -10,6 +10,7 @@ dependencies {
     // Redis 核心
     api libs.spring.boot.starter.data.redis
     api libs.redisson.spring.boot.starter
+    api libs.spring.cloud.context
     // 👇 新增：确保 RedisTemplate 支持 java.time
     api libs.jackson.jsr310
     compileOnly libs.lombok

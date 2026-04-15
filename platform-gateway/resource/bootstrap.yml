@@ -1,21 +1,19 @@
 spring:
   application:
     name: platform-gateway
+  config:
+    import:
+      # 从Nacos加载主配置文件（application.yml可被覆盖）
+      - optional:nacos:${spring.application.name}.yaml?refreshEnabled=true
+      # 从Nacos加载security.properties（包含Redis等敏感配置）
+      - optional:nacos:security.properties?!refreshEnabled=true
   cloud:
     nacos:
       server-addr: ${NACOS_ADDR:127.0.0.1:8848}
       username: ${NACOS_USER:nacos}
       password: ${NACOS_PWD:nacos}
       discovery:
+        enabled: true
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
-        namespace: ${NACOS_NAMESPACE:}  # 默认命名空间实际为空字符串
-      config:
-        group: ${NACOS_GROUP:DEFAULT_GROUP}
-        namespace: ${NACOS_NAMESPACE:public}
-        file-extension: yaml
-        # 🔑 核心修正：extension-configs 是列表（复数），必须使用数组格式
-        # 扩展配置：读取额外的 Nacos 配置文件
-        extension-configs:
-          - data-id: security.properties
-            group: ${NACOS_GROUP:DEFAULT_GROUP}
-            refresh: true
+        namespace: ${NACOS_NAMESPACE:}

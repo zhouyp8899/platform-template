@@ -2,6 +2,7 @@ package com.zzl.platform.common.redis.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * Redis自定义配置属性
@@ -9,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = "platform.redis")
+@RefreshScope
 public class RedisProperties {
 
     /**
