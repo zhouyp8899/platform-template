@@ -17,6 +17,8 @@
 
 注意事项：
 - nacos配置的读取方式：
+
+```yaml
 spring:
   config:
     import:
@@ -25,3 +27,4 @@ spring:
       - optional:nacos:${spring.application.name}.yaml?refreshEnabled=true
       # 从Nacos加载security.properties（包含Redis等敏感配置）
       - optional:nacos:security.properties?!refreshEnabled=true
+```
