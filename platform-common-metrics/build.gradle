@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.zzl.platform.common'
+
+dependencies {
+    api libs.micrometer.core
+    implementation libs.spring.boot.starter.actuator
+
+    // 如需 Lombok 等编译期工具
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+}

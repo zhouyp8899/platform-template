@@ -51,6 +51,9 @@ jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 # 👇 新增：Java 8 时间模块（版本由 BOM 托管，无需写版本号）
 jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
 
+# Micrometer（监控指标）
+micrometer-core = { module = "io.micrometer:micrometer-core" }
+
 # Gateway相关依赖
 spring-cloud-starter-circuitbreaker-reactor-resilience4j = { module = "org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j" }
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version = "0.12.3" }

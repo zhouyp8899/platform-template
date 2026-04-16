@@ -4,6 +4,7 @@ group = 'com.zzl.platform.gw'
 dependencies {
     implementation project(':platform-common-core')
     implementation project(':platform-common-redis')
+    implementation project(':platform-common-metrics')
     implementation libs.spring.cloud.starter.gateway
     implementation libs.spring.cloud.starter.bootstrap
     implementation libs.nacos.config
@@ -21,6 +22,15 @@ dependencies {
     // 如需 Lombok 等编译期工具
     compileOnly libs.lombok
     annotationProcessor libs.lombok
+
+    // 测试依赖
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testImplementation 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
 sourceSets {
@@ -31,5 +41,20 @@ sourceSets {
         resources {
             srcDirs = ['resource']
         }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+        resources {
+            srcDirs = ['test/resources']
+        }
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }

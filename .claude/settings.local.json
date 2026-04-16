@@ -12,7 +12,19 @@
       "Bash(./gradlew :platform-gateway:compileJava:*)",
       "WebFetch(domain:github.com)",
       "Bash(xargs grep:*)",
-      "Bash(./gradlew build:*)"
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest\")",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest.testRecordResponseTime\" --info)",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest.testRecordRequest\" --info)",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest.testRecordRequest\")",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest.testRecordResponseTime\")",
+      "Bash(./gradlew :platform-gateway:test --tests \"GatewayMetricsTest.testConcurrentRecordRequests\")",
+      "Bash(./gradlew :platform-common-core:dependencies --configuration runtimeClasspath)",
+      "Bash(./gradlew :platform-common-core:dependencies)",
+      "Bash(ls -d */)",
+      "Bash(./gradlew :platform-common-metrics:compileJava)",
+      "Bash(./gradlew :platform-common-metrics:compile.properties)",
+      "Bash(./gradlew :platform-common-metrics:build --refresh-dependencies)"
     ]
   }
 }

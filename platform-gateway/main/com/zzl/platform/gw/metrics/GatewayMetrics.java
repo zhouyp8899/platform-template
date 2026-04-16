@@ -4,12 +4,15 @@ import io.micrometer.core.instrument.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Gateway监控指标
  * 提供请求量、响应时间、错误率等监控指标
+ * 使用 LongAdder 优化高并发场景下的计数性能
  */
 @Slf4j
 @Component
@@ -17,7 +20,8 @@ public class GatewayMetrics {
 
     private final MeterRegistry meterRegistry;
 
-    // 请求计数器
+    // 请求计数器（使用 Counter.Builder 缓存避免重复创建）
+    private final ConcurrentMap<String, Counter> counterCache = new ConcurrentHashMap<>();
     private final Counter requestCounter;
     private final Counter successCounter;
     private final Counter errorCounter;
@@ -25,37 +29,25 @@ public class GatewayMetrics {
     private final Counter authErrorCounter;
     private final Counter rateLimitCounter;
 
-    // 响应时间统计
-    private final AtomicLong totalResponseTime = new AtomicLong(0);
-    private final AtomicLong totalRequests = new AtomicLong(0);
+    // 响应时间统计（使用 LongAdder 优化高并发性能）
+    private final LongAdder totalResponseTime = new LongAdder();
+    private final LongAdder totalRequests = new LongAdder();
     private final AtomicReference<Long> maxResponseTime = new AtomicReference<>(0L);
 
     public GatewayMetrics(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
 
-        // 初始化计数器
-        this.requestCounter = Counter.builder("gateway.requests.total")
-                .description("Total number of requests")
-                .register(meterRegistry);
-        this.successCounter = Counter.builder("gateway.requests.success")
-                .description("Number of successful requests")
-                .register(meterRegistry);
-        this.errorCounter = Counter.builder("gateway.requests.error")
-                .description("Number of error requests")
-                .register(meterRegistry);
-        this.timeoutCounter = Counter.builder("gateway.requests.timeout")
-                .description("Number of timeout requests")
-                .register(meterRegistry);
-        this.authErrorCounter = Counter.builder("gateway.requests.auth_error")
-                .description("Number of authentication errors")
-                .register(meterRegistry);
-        this.rateLimitCounter = Counter.builder("gateway.requests.rate_limited")
-                .description("Number of rate limited requests")
-                .register(meterRegistry);
+        // 初始化基础计数器
+        this.requestCounter = registerCounter("gateway.requests.total", "Total number of requests");
+        this.successCounter = registerCounter("gateway.requests.success", "Number of successful requests");
+        this.errorCounter = registerCounter("gateway.requests.error", "Number of error requests");
+        this.timeoutCounter = registerCounter("gateway.requests.timeout", "Number of timeout requests");
+        this.authErrorCounter = registerCounter("gateway.requests.auth_error", "Number of authentication errors");
+        this.rateLimitCounter = registerCounter("gateway.requests.rate_limited", "Number of rate limited requests");
 
         // 注册 Gauge 指标
         Gauge.builder("gateway.response.time.avg", totalResponseTime,
-                        t -> totalRequests.get() > 0 ? t.get() / totalRequests.get() : 0)
+                        t -> totalRequests.sum() > 0 ? t.sum() / totalRequests.sum() : 0)
                 .description("Average response time in milliseconds")
                 .register(meterRegistry);
 
@@ -63,7 +55,44 @@ public class GatewayMetrics {
                 .description("Maximum response time in milliseconds")
                 .register(meterRegistry);
 
+        Gauge.builder("gateway.requests.count", totalRequests, LongAdder::sum)
+                .description("Total request count")
+                .register(meterRegistry);
+
         log.info("Gateway metrics initialized");
+    }
+
+    /**
+     * 注册计数器（带缓存）
+     */
+    private Counter registerCounter(String name, String description) {
+        return Counter.builder(name)
+                .description(description)
+                .register(meterRegistry);
+    }
+
+    /**
+     * 获取或创建带标签的计数器
+     */
+    private Counter getOrCreateCounter(String name, String description, Iterable<Tag> tags) {
+        String cacheKey = buildCacheKey(name, tags);
+        return counterCache.computeIfAbsent(cacheKey, k ->
+                Counter.builder(name)
+                        .description(description)
+                        .tags(tags)
+                        .register(meterRegistry)
+        );
+    }
+
+    /**
+     * 构建缓存键
+     */
+    private String buildCacheKey(String name, Iterable<Tag> tags) {
+        StringBuilder keyBuilder = new StringBuilder(name);
+        for (Tag tag : tags) {
+            keyBuilder.append("|").append(tag.getKey()).append("=").append(tag.getValue());
+        }
+        return keyBuilder.toString();
     }
 
     /**
@@ -74,11 +103,8 @@ public class GatewayMetrics {
                 Tag.of("path", sanitizeTag(path)),
                 Tag.of("method", method)
         );
-        Counter.builder("gateway.requests.total")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
-        totalRequests.incrementAndGet();
+        getOrCreateCounter("gateway.requests.total", "Total number of requests", tags).increment();
+        totalRequests.increment();
     }
 
     /**
@@ -89,10 +115,7 @@ public class GatewayMetrics {
                 Tag.of("path", sanitizeTag(path)),
                 Tag.of("method", method)
         );
-        Counter.builder("gateway.requests.success")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
+        getOrCreateCounter("gateway.requests.success", "Number of successful requests", tags).increment();
     }
 
     /**
@@ -104,10 +127,7 @@ public class GatewayMetrics {
                 Tag.of("method", method),
                 Tag.of("error_type", errorType)
         );
-        Counter.builder("gateway.requests.error")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
+        getOrCreateCounter("gateway.requests.error", "Number of error requests", tags).increment();
     }
 
     /**
@@ -118,10 +138,7 @@ public class GatewayMetrics {
                 Tag.of("path", sanitizeTag(path)),
                 Tag.of("method", method)
         );
-        Counter.builder("gateway.requests.timeout")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
+        getOrCreateCounter("gateway.requests.timeout", "Number of timeout requests", tags).increment();
     }
 
     /**
@@ -132,10 +149,7 @@ public class GatewayMetrics {
                 Tag.of("path", sanitizeTag(path)),
                 Tag.of("reason", reason)
         );
-        Counter.builder("gateway.requests.auth_error")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
+        getOrCreateCounter("gateway.requests.auth_error", "Number of authentication errors", tags).increment();
     }
 
     /**
@@ -146,17 +160,15 @@ public class GatewayMetrics {
                 Tag.of("path", sanitizeTag(path)),
                 Tag.of("limit_type", limitType)
         );
-        Counter.builder("gateway.requests.rate_limited")
-                .tags(tags)
-                .register(meterRegistry)
-                .increment();
+        getOrCreateCounter("gateway.requests.rate_limited", "Number of rate limited requests", tags).increment();
     }
 
     /**
      * 记录响应时间
      */
     public void recordResponseTime(String path, String method, long responseTimeMs) {
-        totalResponseTime.addAndGet(responseTimeMs);
+        totalResponseTime.add(responseTimeMs);
+        totalRequests.increment();
 
         // 更新最大响应时间
         maxResponseTime.updateAndGet(current -> Math.max(current, responseTimeMs));
@@ -185,16 +197,24 @@ public class GatewayMetrics {
      * 获取指标摘要
      */
     public MetricsSummary getSummary() {
+        double reqSum = totalRequests.sum();
         return new MetricsSummary(
-                totalRequests.get(),
+                (long) reqSum,
                 successCounter.count(),
                 errorCounter.count(),
                 timeoutCounter.count(),
                 authErrorCounter.count(),
                 rateLimitCounter.count(),
-                totalRequests.get() > 0 ?
-                        totalResponseTime.get() / totalRequests.get() : 0
+                reqSum > 0 ? totalResponseTime.sum() / reqSum : 0
         );
+    }
+
+    /**
+     * 清除计数器缓存（用于测试或重置）
+     */
+    public void clearCounterCache() {
+        counterCache.clear();
+        log.info("Counter cache cleared");
     }
 
     /**

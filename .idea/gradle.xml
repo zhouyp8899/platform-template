@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/platform-auth-service" />
             <option value="$PROJECT_DIR$/platform-common-core" />
             <option value="$PROJECT_DIR$/platform-common-db" />
+            <option value="$PROJECT_DIR$/platform-common-metrics" />
             <option value="$PROJECT_DIR$/platform-common-redis" />
             <option value="$PROJECT_DIR$/platform-common-web" />
             <option value="$PROJECT_DIR$/platform-gateway" />
