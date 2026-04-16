@@ -10,7 +10,18 @@
   - xxx-service 以上为基础必备模块，接下来的服务则根据业务需求新增即可
 
 基本版本：
-jdk:21
-spring boot :3.x
-spring cloud:2023.x
-spring cloud aliba:2023.x
+- jdk:21
+- spring boot :3.x
+- spring cloud:2023.x
+- spring cloud aliba:2023.x
+
+注意事项：
+- nacos配置的读取方式：
+spring:
+  config:
+    import:
+      # 一行一个配置文件
+      # 从Nacos加载主配置文件（application.yml可被覆盖）
+      - optional:nacos:${spring.application.name}.yaml?refreshEnabled=true
+      # 从Nacos加载security.properties（包含Redis等敏感配置）
+      - optional:nacos:security.properties?!refreshEnabled=true
