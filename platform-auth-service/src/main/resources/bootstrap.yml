@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: platform-auth-service
+  config:
+    import:
+      # 从Nacos加载主配置文件（application.yml可被覆盖）
+      - optional:nacos:${spring.application.name}.yaml?refreshEnabled=true
+      # 从Nacos加载security.properties（包含Redis等敏感配置）
+      - optional:nacos:security.properties?!refreshEnabled=true
+  cloud:
+    nacos:
+      server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      username: ${NACOS_USER:nacos}
+      password: ${NACOS_PWD:nacos}
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        namespace: ${NACOS_NAMESPACE:}

@@ -24,7 +24,13 @@
       "Bash(ls -d */)",
       "Bash(./gradlew :platform-common-metrics:compileJava)",
       "Bash(./gradlew :platform-common-metrics:compile.properties)",
-      "Bash(./gradlew :platform-common-metrics:build --refresh-dependencies)"
+      "Bash(./gradlew :platform-common-metrics:build --refresh-dependencies)",
+      "Bash(git ls-tree:*)",
+      "Bash(./gradlew :platform-gateway:test --tests GatewayMetricsTest)",
+      "Bash(./gradlew compileJava)",
+      "Bash(./gradlew :platform-auth-service:compileJava:*)",
+      "Bash(./gradlew :platform-auth-service:build:*)",
+      "Bash(ls -d platform-*)"
     ]
   }
 }

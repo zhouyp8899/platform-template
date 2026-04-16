@@ -5,6 +5,7 @@ plugins {
 group = 'com.zzl.platform.common'
 
 dependencies {
+    api project(':platform-common-core')
     api libs.micrometer.core
     implementation libs.spring.boot.starter.actuator
 

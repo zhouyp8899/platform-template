@@ -1,0 +1,64 @@
+server:
+  port: 7200
+spring:
+  application:
+    name: platform-auth-service
+  data:
+    redis:
+      host: ${redis.host:localhost}
+      port: ${redis.port:6379}
+      password: ${redis.password:}
+      database: 1
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${mysql.url}/${mysql.database:platform}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${mysql.username:root}
+    password: ${mysql.password:}
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.zzl.platform.auth.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.zzl.platform.auth: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+
+# 自定义 MyBatis Plus 配置（覆盖公共模块默认值）
+platform:
+  mybatis-plus:
+    max-limit: 500          # 单页最大限制（默认1000）
+    overflow: true          # 溢出总页数后进行处理（默认false）
+    optimize-count-sql: true  # 优化 COUNT SQL 查询（默认true）
+    safe-sql: true         # 启用安全 SQL 检查（默认true）

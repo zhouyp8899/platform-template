@@ -1,5 +1,6 @@
 package com.zzl.platform.gw.metrics;
 
+import com.zzl.platform.common.metrics.MetricsTemplate;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.AfterEach;
@@ -18,18 +19,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class GatewayMetricsTest {
 
     private MeterRegistry meterRegistry;
+    private MetricsTemplate metricsTemplate;
     private GatewayMetrics gatewayMetrics;
 
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        gatewayMetrics = new GatewayMetrics(meterRegistry);
+        metricsTemplate = new MetricsTemplate(meterRegistry, "gateway");
+        gatewayMetrics = new GatewayMetrics(metricsTemplate);
     }
 
     @AfterEach
     void tearDown() {
-        if (gatewayMetrics != null) {
-            gatewayMetrics.clearCounterCache();
+        if (metricsTemplate != null) {
+            metricsTemplate.clearCache();
         }
     }
 
@@ -185,23 +188,6 @@ class GatewayMetricsTest {
                 .count();
 
         assertTrue(count > 0, "Tags should be limited to 50 characters");
-    }
-
-    @Test
-    @DisplayName("测试计数器缓存清理")
-    void testClearCounterCache() {
-        gatewayMetrics.recordRequest("/api/test", "GET");
-        gatewayMetrics.recordRequest("/api/test2", "GET");
-
-        // 记录清理前的计数器数量
-        long beforeClear = meterRegistry.getMeters().size();
-
-        gatewayMetrics.clearCounterCache();
-
-        // 记录清理后的计数器数量（基础计数器仍存在）
-        long afterClear = meterRegistry.getMeters().size();
-
-        assertEquals(beforeClear, afterClear, "Base counters should remain after cache clear");
     }
 
     @Test

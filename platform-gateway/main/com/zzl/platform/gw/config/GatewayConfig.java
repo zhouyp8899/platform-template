@@ -22,7 +22,7 @@ public class GatewayConfig {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 // 认证服务路由
-                .route(r -> r.path("/auth-service/**")
+                .route(r -> r.path("/api/admin/auth/**")
                         .filters(f -> f
                                 // 移除路径前缀
                                 .stripPrefix(1)

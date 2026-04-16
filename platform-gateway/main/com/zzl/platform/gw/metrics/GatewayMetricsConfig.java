@@ -1,14 +1,16 @@
 package com.zzl.platform.gw.metrics;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Gateway监控指标配置
- * 集成Micrometer，提供请求量、响应时间、错误率等指标
+ * 使用公共metrics模块的自动配置，简化配置逻辑
+ * 指标采集默认启用，可通过配置关闭
+ *
+ * @author zhouyp
+ * @since 2026-04-16
  */
 @Slf4j
 @Configuration
@@ -16,10 +18,14 @@ import org.springframework.context.annotation.Configuration;
 public class GatewayMetricsConfig {
 
     /**
-     * 创建自定义指标
+     * GatewayMetrics由MetricsAutoConfiguration自动配置创建
+     * MetricsTemplate会自动注入到GatewayMetrics中
+     *
+     * 配置说明：
+     * - platform.gateway.metrics-enabled=false 时禁用gateway指标
+     * - platform.metrics.enabled=false 时禁用整个metrics模块
      */
-    @Bean
-    public GatewayMetrics gatewayMetrics(MeterRegistry meterRegistry) {
-        return new GatewayMetrics(meterRegistry);
+    public GatewayMetricsConfig() {
+        log.info("Gateway metrics configuration loaded");
     }
 }

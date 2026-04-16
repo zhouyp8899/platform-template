@@ -2,6 +2,12 @@ server:
   port: 7100
 
 platform:
+  metrics:
+    enabled: true
+    prefix: gateway
+    detailed-enabled: false
+    tag-max-length: 50
+    percentile-histogram: true
   redis:
     enabled: true
     lock:
@@ -71,8 +77,9 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
 
 # 日志配置
