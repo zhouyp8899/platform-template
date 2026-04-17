@@ -42,3 +42,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/dataSources.xml
+/logs/platform-auth-service/all.log
+/logs/platform-gateway/all.log
+/logs/**

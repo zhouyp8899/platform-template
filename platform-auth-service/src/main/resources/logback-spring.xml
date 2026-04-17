@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 引入Spring Boot默认配置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- 定义应用名称 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"
+                    defaultValue="platform-auth-service"/>
+
+    <!-- 定义环境 -->
+    <springProperty scope="context" name="ENV" source="spring.profiles.active" defaultValue="dev"/>
+
+    <!-- 定义简洁的日志格式（开发环境） -->
+    <property name="SIMPLE_LOG_PATTERN"
+              value="%d{HH:mm:ss.SSS} %clr(%-5level){faint} [%thread] %clr(%logger{36}){cyan} - %m%n%wEx"/>
+
+    <!-- 定义包含MDC信息的日志格式 -->
+    <property name="MDC_LOG_PATTERN"
+              value="%d{HH:mm:ss.SSS} %clr(%-5level){faint} [%thread] %clr(%logger{36}){cyan} traceId=%X{traceId:-N/A} - %m%n"/>
+
+    <!-- 定义JSON格式的日志输出（用于日志收集系统） -->
+    <property name="JSON_LOG_PATTERN"
+              value="%d{HH:mm:ss.SSS}|traceId=%X{traceId:-N/A}|userId=%X{userId:-N/A}|clientIp=%X{clientIp:-}|uri=%X{requestUri:-}|%msg%n"/>
+
+    <!-- 日志文件存储路径 -->
+    <property name="LOG_HOME" value="logs"/>
+
+    <!-- 控制台输出 - 开发环境简洁格式 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${SIMPLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 控制台输出 - 包含MDC信息 -->
+    <appender name="MDC_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${MDC_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 - 所有日志 -->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}/all.log</file>
+        <encoder>
+            <pattern>${MDC_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}/all.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 文件输出 - 错误日志 -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${MDC_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndariTriggeringPolicy>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 文件输出 - JSON格式（用于日志收集系统） -->
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}/json.log</file>
+        <encoder>
+            <pattern>${JSON_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}/json.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步输出 - 包装文件输出，提高性能 -->
+    <appender name="ASYNC_FILE_ALL" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ALL"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <appender name="ASYNC_FILE_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ERROR"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <appenderer name="ASYNC_FILE_JSON" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_JSON"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- 开发环境配置 -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE_ALL"/>
+            <appender-ref ref="ASYNC_FILE_ERROR"/>
+        </root>
+
+        <!-- 关键业务组件使用DEBUG -->
+        <logger name="com.zzl.platform" level="DEBUG"/>
+        <logger name="com.baomidou.mybatisplus" level="INFO"/>
+
+        <!-- 只记录WARN和ERROR，减少冗余 -->
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.cloud" level="WARN"/>
+        <logger name="com.alibaba.nacos" level="WARN"/>
+        <logger name="org.apache.ibatis" level="WARN"/>
+    </springProfile>
+
+    <!-- 测试环境配置 -->
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE_ALL"/>
+            <appender-ref ref="ASYNC_FILE_ERROR"/>
+        </root>
+        <logger name="com.zzl.platform" level="DEBUG"/>
+        <logger name="com.baomidou.mybatisplus" level="INFO"/>
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.cloud" level="WARN"/>
+    </springProfile>
+
+    <!-- 生产环境配置 -->
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="ASYNC_FILE_ALL"/>
+            <appender-ref ref="ASYNC_FILE_ERROR"/>
+            <appender-ref ref="ASYNC_FILE_JSON"/>
+        </root>
+        <logger name="com.zzl.platform" level="INFO"/>
+        <logger name="com.baomidou.mybatisplus" level="WARN"/>
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="reactor.netty" level="ERROR"/>
+        <logger name="com.alibaba.nacos" level="ERROR"/>
+    </springProfile>
+
+    <!-- 默认配置 -->
+    <springProfile name="!dev &amp; !test &amp; !prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE_ALL"/>
+            <appender-ref ref="ASYNC_FILE_ERROR"/>
+        </root>
+        <logger name="com.zzl.platform" level="INFO"/>
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.cloud" level="WARN"/>
+    </springProfile>
+
+</configuration>
