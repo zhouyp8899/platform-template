@@ -6,7 +6,7 @@ import com.zzl.platform.auth.dto.PermissionEditRequest;
 import com.zzl.platform.auth.service.PermissionService;
 import com.zzl.platform.auth.vo.PageResponse;
 import com.zzl.platform.auth.vo.PermissionVO;
-import com.zzl.platform.auth.vo.ResponseResult;
+import com.zzl.platform.common.core.res.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,15 +31,15 @@ public class PermissionController {
      */
     @PostMapping("/page")
     @RequiresPermission(value = "system:permission:list", desc = "权限查询")
-    public ResponseResult<PageResponse<PermissionVO>> pagePermission(@RequestParam(defaultValue = "1") Integer pageNum,
-                                                                     @RequestParam(defaultValue = "10") Integer pageSize,
-                                                                     @RequestParam(required = false) String keyword) {
+    public Result<PageResponse<PermissionVO>> pagePermission(@RequestParam(defaultValue = "1") Integer pageNum,
+                                                             @RequestParam(defaultValue = "10") Integer pageSize,
+                                                             @RequestParam(required = false) String keyword) {
         try {
             PageResponse<PermissionVO> response = permissionService.pagePermission(pageNum, pageSize, keyword);
-            return ResponseResult.success(response);
+            return Result.success(response);
         } catch (Exception e) {
             log.error("Page permission error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -48,13 +48,13 @@ public class PermissionController {
      */
     @GetMapping("/list")
     @RequiresPermission(value = "system:permission:list", desc = "权限查询")
-    public ResponseResult<List<PermissionVO>> listAllPermissions() {
+    public Result<List<PermissionVO>> listAllPermissions() {
         try {
             List<PermissionVO> permissions = permissionService.listAllPermissions();
-            return ResponseResult.success(permissions);
+            return Result.success(permissions);
         } catch (Exception e) {
             log.error("List all permissions error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -63,13 +63,13 @@ public class PermissionController {
      */
     @GetMapping("/{id}")
     @RequiresPermission(value = "system:permission:get", desc = "权限详情")
-    public ResponseResult<PermissionVO> getPermissionById(@PathVariable Long id) {
+    public Result<PermissionVO> getPermissionById(@PathVariable Long id) {
         try {
             PermissionVO permission = permissionService.getPermissionById(id);
-            return ResponseResult.success(permission);
+            return Result.success(permission);
         } catch (Exception e) {
             log.error("Get permission by id error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -78,14 +78,14 @@ public class PermissionController {
      */
     @PostMapping("/add")
     @RequiresPermission(value = "system:permission:add", desc = "权限新增")
-    public ResponseResult<Long> addPermission(@RequestBody PermissionAddRequest request,
+    public Result<Long> addPermission(@RequestBody PermissionAddRequest request,
                                               @RequestHeader("X-User-Id") Long operatorId) {
         try {
             Long permissionId = permissionService.addPermission(request, operatorId);
-            return ResponseResult.success("权限新增成功", permissionId);
+            return Result.success("权限新增成功", permissionId);
         } catch (Exception e) {
             log.error("Add permission error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -94,14 +94,14 @@ public class PermissionController {
      */
     @PutMapping("/edit")
     @RequiresPermission(value = "system:permission:edit", desc = "权限编辑")
-    public ResponseResult<Void> editPermission(@RequestBody PermissionEditRequest request,
+    public Result<Void> editPermission(@RequestBody PermissionEditRequest request,
                                                @RequestHeader("X-User-Id") Long operatorId) {
         try {
             permissionService.editPermission(request, operatorId);
-            return ResponseResult.success("权限编辑成功", null);
+            return Result.success("权限编辑成功", null);
         } catch (Exception e) {
             log.error("Edit permission error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -110,14 +110,14 @@ public class PermissionController {
      */
     @DeleteMapping("/delete/{id}")
     @RequiresPermission(value = "system:permission:delete", desc = "权限删除")
-    public ResponseResult<Void> deletePermission(@PathVariable Long id,
+    public Result<Void> deletePermission(@PathVariable Long id,
                                                  @RequestHeader("X-User-Id") Long operatorId) {
         try {
             permissionService.deletePermission(id, operatorId);
-            return ResponseResult.success("权限删除成功", null);
+            return Result.success("权限删除成功", null);
         } catch (Exception e) {
             log.error("Delete permission error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 }

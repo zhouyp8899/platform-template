@@ -5,7 +5,7 @@ import com.zzl.platform.auth.dto.DepartmentAddRequest;
 import com.zzl.platform.auth.dto.DepartmentEditRequest;
 import com.zzl.platform.auth.service.DepartmentService;
 import com.zzl.platform.auth.vo.DepartmentVO;
-import com.zzl.platform.auth.vo.ResponseResult;
+import com.zzl.platform.common.core.res.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +30,13 @@ public class DepartmentController {
      */
     @GetMapping("/tree")
     @RequiresPermission(value = "system:dept:list", desc = "部门查询")
-    public ResponseResult<List<DepartmentVO>> getDepartmentTree() {
+    public Result<List<DepartmentVO>> getDepartmentTree() {
         try {
             List<DepartmentVO> tree = departmentService.treeAllDepartments();
-            return ResponseResult.success(tree);
+            return Result.success(tree);
         } catch (Exception e) {
             log.error("Get department tree error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -45,13 +45,13 @@ public class DepartmentController {
      */
     @GetMapping("/{id}")
     @RequiresPermission(value = "system:dept:get", desc = "部门详情")
-    public ResponseResult<DepartmentVO> getDepartmentById(@PathVariable Long id) {
+    public Result<DepartmentVO> getDepartmentById(@PathVariable Long id) {
         try {
             DepartmentVO department = departmentService.getDepartmentById(id);
-            return ResponseResult.success(department);
+            return Result.success(department);
         } catch (Exception e) {
             log.error("Get department by id error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -60,14 +60,14 @@ public class DepartmentController {
      */
     @PostMapping("/add")
     @RequiresPermission(value = "system:dept:add", desc = "部门新增")
-    public ResponseResult<Long> addDepartment(@RequestBody DepartmentAddRequest request,
+    public Result<Long> addDepartment(@RequestBody DepartmentAddRequest request,
                                               @RequestHeader("X-User-Id") Long operatorId) {
         try {
             Long deptId = departmentService.addDepartment(request, operatorId);
-            return ResponseResult.success("部门新增成功", deptId);
+            return Result.success("部门新增成功", deptId);
         } catch (Exception e) {
             log.error("Add department error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -76,14 +76,14 @@ public class DepartmentController {
      */
     @PutMapping("/edit")
     @RequiresPermission(value = "system:dept:edit", desc = "部门编辑")
-    public ResponseResult<Void> editDepartment(@RequestBody DepartmentEditRequest request,
+    public Result<Void> editDepartment(@RequestBody DepartmentEditRequest request,
                                                @RequestHeader("X-User-Id") Long operatorId) {
         try {
             departmentService.editDepartment(request, operatorId);
-            return ResponseResult.success("部门编辑成功", null);
+            return Result.success("部门编辑成功", null);
         } catch (Exception e) {
             log.error("Edit department error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -92,14 +92,14 @@ public class DepartmentController {
      */
     @DeleteMapping("/delete/{id}")
     @RequiresPermission(value = "system:dept:delete", desc = "部门删除")
-    public ResponseResult<Void> deleteDepartment(@PathVariable Long id,
+    public Result<Void> deleteDepartment(@PathVariable Long id,
                                                  @RequestHeader("X-User-Id") Long operatorId) {
         try {
             departmentService.deleteDepartment(id, operatorId);
-            return ResponseResult.success("部门删除成功", null);
+            return Result.success("部门删除成功", null);
         } catch (Exception e) {
             log.error("Delete department error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 }

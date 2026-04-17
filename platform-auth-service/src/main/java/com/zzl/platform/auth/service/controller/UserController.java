@@ -4,8 +4,8 @@ import com.zzl.platform.auth.aspect.RequiresPermission;
 import com.zzl.platform.auth.dto.*;
 import com.zzl.platform.auth.service.UserService;
 import com.zzl.platform.auth.vo.PageResponse;
-import com.zzl.platform.auth.vo.ResponseResult;
 import com.zzl.platform.auth.vo.UserVO;
+import com.zzl.platform.common.core.res.Result;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -33,13 +33,13 @@ public class UserController {
      */
     @PostMapping("/page")
     @RequiresPermission(value = "system:user:list", desc = "用户查询")
-    public ResponseResult<PageResponse<UserVO>> pageUser(@RequestBody PageRequest<UserQueryRequest> request) {
+    public Result<PageResponse<UserVO>> pageUser(@RequestBody PageRequest<UserQueryRequest> request) {
         try {
             PageResponse<UserVO> response = userService.pageUser(request);
-            return ResponseResult.success(response);
+            return Result.success(response);
         } catch (Exception e) {
             log.error("Page user error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -48,13 +48,13 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @RequiresPermission(value = "system:user:get", desc = "用户详情")
-    public ResponseResult<UserVO> getUserById(@PathVariable Long id) {
+    public Result<UserVO> getUserById(@PathVariable Long id) {
         try {
             UserVO userVO = userService.getUserById(id);
-            return ResponseResult.success(userVO);
+            return Result.success(userVO);
         } catch (Exception e) {
             log.error("Get user by id error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -63,14 +63,14 @@ public class UserController {
      */
     @PostMapping("/add")
     @RequiresPermission(value = "system:user:add", desc = "用户新增")
-    public ResponseResult<Long> addUser(@Valid @RequestBody UserAddRequest request,
+    public Result<Long> addUser(@Valid @RequestBody UserAddRequest request,
                                         @RequestHeader("X-User-Id") Long operatorId) {
         try {
             Long userId = userService.addUser(request, operatorId);
-            return ResponseResult.success("用户新增成功", userId);
+            return Result.success("用户新增成功", userId);
         } catch (Exception e) {
             log.error("Add user error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -79,14 +79,14 @@ public class UserController {
      */
     @PutMapping("/edit")
     @RequiresPermission(value = "system:user:edit", desc = "用户编辑")
-    public ResponseResult<Void> editUser(@Valid @RequestBody UserEditRequest request,
+    public Result<Void> editUser(@Valid @RequestBody UserEditRequest request,
                                          @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.editUser(request, operatorId);
-            return ResponseResult.success("用户编辑成功", null);
+            return Result.success("用户编辑成功", null);
         } catch (Exception e) {
             log.error("Edit user error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -95,14 +95,14 @@ public class UserController {
      */
     @DeleteMapping("/delete/{id}")
     @RequiresPermission(value = "system:user:delete", desc = "用户删除")
-    public ResponseResult<Void> deleteUser(@PathVariable Long id,
+    public Result<Void> deleteUser(@PathVariable Long id,
                                            @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.deleteUser(id, operatorId);
-            return ResponseResult.success("用户删除成功", null);
+            return Result.success("用户删除成功", null);
         } catch (Exception e) {
             log.error("Delete user error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -111,14 +111,14 @@ public class UserController {
      */
     @DeleteMapping("/batch-delete")
     @RequiresPermission(value = "system:user:delete", desc = "用户删除")
-    public ResponseResult<Void> batchDeleteUsers(@RequestBody List<Long> userIds,
+    public Result<Void> batchDeleteUsers(@RequestBody List<Long> userIds,
                                                  @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.batchDeleteUsers(userIds, operatorId);
-            return ResponseResult.success("批量删除成功", null);
+            return Result.success("批量删除成功", null);
         } catch (Exception e) {
             log.error("Batch delete users error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -127,14 +127,14 @@ public class UserController {
      */
     @PutMapping("/reset-password")
     @RequiresPermission(value = "system:user:reset", desc = "重置密码")
-    public ResponseResult<Void> resetPassword(@RequestBody Long userId,
+    public Result<Void> resetPassword(@RequestBody Long userId,
                                               @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.resetPassword(userId, operatorId);
-            return ResponseResult.success("密码重置成功", null);
+            return Result.success("密码重置成功", null);
         } catch (Exception e) {
             log.error("Reset password error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -143,14 +143,14 @@ public class UserController {
      */
     @PutMapping("/change-status")
     @RequiresPermission(value = "system:user:edit", desc = "用户编辑")
-    public ResponseResult<Void> changeUserStatus(@RequestBody ChangeStatusRequest request,
+    public Result<Void> changeUserStatus(@RequestBody ChangeStatusRequest request,
                                                  @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.changeUserStatus(request.getUserId(), request.getStatus(), operatorId);
-            return ResponseResult.success("状态修改成功", null);
+            return Result.success("状态修改成功", null);
         } catch (Exception e) {
             log.error("Change user status error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -159,14 +159,14 @@ public class UserController {
      */
     @PostMapping("/grant-roles")
     @RequiresPermission(value = "system:user:grant", desc = "用户授权")
-    public ResponseResult<Void> grantRoles(@Valid @RequestBody GrantRolesRequest request,
+    public Result<Void> grantRoles(@Valid @RequestBody GrantRolesRequest request,
                                            @RequestHeader("X-User-Id") Long operatorId) {
         try {
             userService.grantRoles(request, operatorId);
-            return ResponseResult.success("角色分配成功", null);
+            return Result.success("角色分配成功", null);
         } catch (Exception e) {
             log.error("Grant roles error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -175,13 +175,13 @@ public class UserController {
      */
     @GetMapping("/{id}/roles")
     @RequiresPermission(value = "system:user:get", desc = "用户详情")
-    public ResponseResult<List<Long>> getUserRoles(@PathVariable Long id) {
+    public Result<List<Long>> getUserRoles(@PathVariable Long id) {
         try {
             List<Long> roleIds = userService.getUserRoles(id);
-            return ResponseResult.success(roleIds);
+            return Result.success(roleIds);
         } catch (Exception e) {
             log.error("Get user roles error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 }

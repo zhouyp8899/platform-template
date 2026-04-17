@@ -6,8 +6,8 @@ import com.zzl.platform.auth.dto.RoleAddRequest;
 import com.zzl.platform.auth.dto.RoleEditRequest;
 import com.zzl.platform.auth.service.RoleService;
 import com.zzl.platform.auth.vo.PageResponse;
-import com.zzl.platform.auth.vo.ResponseResult;
 import com.zzl.platform.auth.vo.RoleVO;
+import com.zzl.platform.common.core.res.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,15 +32,15 @@ public class RoleController {
      */
     @PostMapping("/page")
     @RequiresPermission(value = "system:role:list", desc = "角色查询")
-    public ResponseResult<PageResponse<RoleVO>> pageRole(@RequestParam(defaultValue = "1") Integer pageNum,
-                                                         @RequestParam(defaultValue = "10") Integer pageSize,
-                                                         @RequestParam(required = false) String keyword) {
+    public Result<PageResponse<RoleVO>> pageRole(@RequestParam(defaultValue = "1") Integer pageNum,
+                                                 @RequestParam(defaultValue = "10") Integer pageSize,
+                                                 @RequestParam(required = false) String keyword) {
         try {
             PageResponse<RoleVO> response = roleService.pageRole(pageNum, pageSize, keyword);
-            return ResponseResult.success(response);
+            return Result.success(response);
         } catch (Exception e) {
             log.error("Page role error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -49,13 +49,13 @@ public class RoleController {
      */
     @GetMapping("/list")
     @RequiresPermission(value = "system:role:list", desc = "角色查询")
-    public ResponseResult<List<RoleVO>> listAllRoles() {
+    public Result<List<RoleVO>> listAllRoles() {
         try {
             List<RoleVO> roles = roleService.listAllRoles();
-            return ResponseResult.success(roles);
+            return Result.success(roles);
         } catch (Exception e) {
             log.error("List all roles error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -64,13 +64,13 @@ public class RoleController {
      */
     @GetMapping("/{id}")
     @RequiresPermission(value = "system:role:get", desc = "角色详情")
-    public ResponseResult<RoleVO> getRoleById(@PathVariable Long id) {
+    public Result<RoleVO> getRoleById(@PathVariable Long id) {
         try {
             RoleVO roleVO = roleService.getRoleById(id);
-            return ResponseResult.success(roleVO);
+            return Result.success(roleVO);
         } catch (Exception e) {
             log.error("Get role by id error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -79,14 +79,14 @@ public class RoleController {
      */
     @PostMapping("/add")
     @RequiresPermission(value = "system:role:add", desc = "角色新增")
-    public ResponseResult<Long> addRole(@RequestBody RoleAddRequest request,
+    public Result<Long> addRole(@RequestBody RoleAddRequest request,
                                         @RequestHeader("X-User-Id") Long operatorId) {
         try {
             Long roleId = roleService.addRole(request, operatorId);
-            return ResponseResult.success("角色新增成功", roleId);
+            return Result.success("角色新增成功", roleId);
         } catch (Exception e) {
             log.error("Add role error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -95,14 +95,14 @@ public class RoleController {
      */
     @PutMapping("/edit")
     @RequiresPermission(value = "system:role:edit", desc = "角色编辑")
-    public ResponseResult<Void> editRole(@RequestBody RoleEditRequest request,
+    public Result<Void> editRole(@RequestBody RoleEditRequest request,
                                          @RequestHeader("X-User-Id") Long operatorId) {
         try {
             roleService.editRole(request, operatorId);
-            return ResponseResult.success("角色编辑成功", null);
+            return Result.success("角色编辑成功", null);
         } catch (Exception e) {
             log.error("Edit role error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -111,14 +111,14 @@ public class RoleController {
      */
     @DeleteMapping("/delete/{id}")
     @RequiresPermission(value = "system:role:delete", desc = "角色删除")
-    public ResponseResult<Void> deleteRole(@PathVariable Long id,
+    public Result<Void> deleteRole(@PathVariable Long id,
                                            @RequestHeader("X-User-Id") Long operatorId) {
         try {
             roleService.deleteRole(id, operatorId);
-            return ResponseResult.success("角色删除成功", null);
+            return Result.success("角色删除成功", null);
         } catch (Exception e) {
             log.error("Delete role error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -127,14 +127,14 @@ public class RoleController {
      */
     @PostMapping("/grant-permissions")
     @RequiresPermission(value = "system:role:grant", desc = "角色授权")
-    public ResponseResult<Void> grantPermissions(@RequestBody GrantPermissionsRequest request,
+    public Result<Void> grantPermissions(@RequestBody GrantPermissionsRequest request,
                                                  @RequestHeader("X-User-Id") Long operatorId) {
         try {
             roleService.grantPermissions(request, operatorId);
-            return ResponseResult.success("权限分配成功", null);
+            return Result.success("权限分配成功", null);
         } catch (Exception e) {
             log.error("Grant permissions error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -143,13 +143,13 @@ public class RoleController {
      */
     @GetMapping("/{id}/permissions")
     @RequiresPermission(value = "system:role:get", desc = "角色详情")
-    public ResponseResult<List<Long>> getRolePermissions(@PathVariable Long id) {
+    public Result<List<Long>> getRolePermissions(@PathVariable Long id) {
         try {
             List<Long> permissionIds = roleService.getRolePermissions(id);
-            return ResponseResult.success(permissionIds);
+            return Result.success(permissionIds);
         } catch (Exception e) {
             log.error("Get role permissions error", e);
-            return ResponseResult.error(e.getMessage());
+            return Result.fail(e.getMessage());
         }
     }
 }
