@@ -6,6 +6,7 @@ dependencies {
     implementation project(':platform-common-redis')
     implementation project(':platform-common-metrics')
     implementation libs.spring.cloud.starter.gateway
+    implementation libs.spring.cloud.starter.loadbalancer
     implementation libs.spring.cloud.starter.bootstrap
     implementation libs.nacos.config
     implementation libs.nacos.discovery

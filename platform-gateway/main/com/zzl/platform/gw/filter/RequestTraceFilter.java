@@ -2,6 +2,7 @@ package com.zzl.platform.gw.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -39,34 +40,49 @@ public class RequestTraceFilter extends AbstractGatewayFilter {
         long startTime = System.currentTimeMillis();
         exchange.getAttributes().put(START_TIME_ATTR, startTime);
 
-        // 生成/获取TraceId
+        // 生成/获取TraceId（优先从MDC获取）
         String traceId = getTraceId(exchange);
         if (!exchange.getRequest().getHeaders().containsKey(TRACE_ID_HEADER)) {
-            exchange.getRequest().mutate().header(TRACE_ID_HEADER, traceId).build();
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header(TRACE_ID_HEADER, traceId)
+                    .build();
+            exchange.mutate().request(mutatedRequest).build();
         }
 
         // 生成/获取RequestId
         String requestId = generateRequestId();
         if (!exchange.getRequest().getHeaders().containsKey(REQUEST_ID_HEADER)) {
-            exchange.getRequest().mutate().header(REQUEST_ID_HEADER, requestId).build();
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header(REQUEST_ID_HEADER, requestId)
+                    .build();
+            exchange.mutate().request(mutatedRequest).build();
         }
 
         // 添加请求时间戳
         String requestTime = TIME_FORMATTER.format(LocalDateTime.now());
         if (!exchange.getRequest().getHeaders().containsKey(REQUEST_TIME_HEADER)) {
-            exchange.getRequest().mutate().header(REQUEST_TIME_HEADER, requestTime).build();
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header(REQUEST_TIME_HEADER, requestTime)
+                    .build();
+            exchange.mutate().request(mutatedRequest).build();
         }
 
         // 添加客户端IP
         String clientIp = getRemoteIp(exchange);
         if (!exchange.getRequest().getHeaders().containsKey(CLIENT_IP_HEADER)) {
-            exchange.getRequest().mutate().header(CLIENT_IP_HEADER, clientIp).build();
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header(CLIENT_IP_HEADER, clientIp)
+                    .build();
+            exchange.mutate().request(mutatedRequest).build();
         }
 
         // 添加User-Agent
         String userAgent = exchange.getRequest().getHeaders().getFirst("User-Agent");
         if (userAgent != null && !exchange.getRequest().getHeaders().containsKey(CLIENT_USER_AGENT_HEADER)) {
-            exchange.getRequest().mutate().header(CLIENT_USER_AGENT_HEADER, userAgent).build();
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header(CLIENT_USER_AGENT_HEADER, userAgent)
+                    .build();
+            exchange.mutate().request(mutatedRequest).build();
         }
 
         // 记录请求追踪信息

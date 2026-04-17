@@ -219,7 +219,7 @@
   ```json
   {
     "id": 1,
-    "username":": "test_user",
+    "username": "test_user",
     "realName": "测试用户",
     "nickName": "测试",
     "phone": "13800138001",

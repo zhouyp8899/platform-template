@@ -7,6 +7,8 @@ spring:
       - optional:nacos:${spring.application.name}.yaml?refreshEnabled=true
       # 从Nacos加载security.properties（包含Redis等敏感配置）
       - optional:nacos:security.properties?!refreshEnabled=true
+      # 加载路由配置
+      - classpath:application-gateway.yml
   cloud:
     nacos:
       server-addr: ${NACOS_ADDR:127.0.0.1:8848}

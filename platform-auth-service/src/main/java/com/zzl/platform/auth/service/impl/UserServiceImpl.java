@@ -74,7 +74,6 @@ public class UserServiceImpl implements UserService {
         if (UserStatus.DISABLED.equals(user.getStatus())) {
             throw new RuntimeException("账户已被禁用");
         }
-
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             handleLoginFail(user);
             throw new RuntimeException("用户名或密码错误");

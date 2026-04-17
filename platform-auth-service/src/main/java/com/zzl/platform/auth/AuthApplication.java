@@ -25,5 +25,6 @@ public class AuthApplication implements CommandLineRunner {
         String started = """
                 -----------------auth-service started-----------------
                 """;
+        log.warn(started);
     }
 }

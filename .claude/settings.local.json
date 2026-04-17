@@ -30,7 +30,9 @@
       "Bash(./gradlew compileJava)",
       "Bash(./gradlew :platform-auth-service:compileJava:*)",
       "Bash(./gradlew :platform-auth-service:build:*)",
-      "Bash(ls -d platform-*)"
+      "Bash(ls -d platform-*)",
+      "Bash(../gradlew clean:*)",
+      "Bash(./gradlew :platform-gateway:clean :platform-gateway:compileJava --console=plain)"
     ]
   }
 }

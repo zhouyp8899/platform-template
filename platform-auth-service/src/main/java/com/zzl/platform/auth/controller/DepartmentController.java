@@ -1,4 +1,4 @@
-package com.zzl.platform.auth.service.controller;
+package com.zzl.platform.auth.controller;
 
 import com.zzl.platform.auth.aspect.RequiresPermission;
 import com.zzl.platform.auth.dto.DepartmentAddRequest;

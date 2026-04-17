@@ -1,4 +1,4 @@
-package com.zzl.platform.auth.service.controller;
+package com.zzl.platform.auth.controller;
 
 import com.zzl.platform.auth.dto.PhoneLoginRequest;
 import com.zzl.platform.auth.dto.RefreshTokenRequest;

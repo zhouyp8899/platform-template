@@ -12,8 +12,6 @@ dependencies {
     implementation libs.spring.boot.starter.web
     implementation libs.spring.cloud.starter.bootstrap
     implementation libs.spring.boot.starter.validation
-    implementation libs.spring.boot.starter.security
-    implementation libs.spring.cloud.starter.loadbalancer
     implementation libs.spring.boot.starter.aop
     implementation libs.nacos.config
     implementation libs.nacos.discovery

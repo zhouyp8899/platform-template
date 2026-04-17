@@ -1,6 +1,5 @@
 server:
   port: 7100
-
 platform:
   metrics:
     enabled: true
@@ -26,6 +25,12 @@ platform:
     black-white-list-enabled: true
     # 监控配置
     metrics-enabled: true
+    whitePaths:
+      - /api/admin/auth/login
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-resources/**
+      - /webjars/**
 
 spring:
   application:
@@ -84,6 +89,7 @@ management:
 
 # 日志配置
 logging:
+  config: classpath:logback-spring.xml
   level:
     root: INFO
     com.zzl.platform.gw: DEBUG

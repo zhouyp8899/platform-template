@@ -50,6 +50,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 # 日志配置
 logging:
+  config: classpath:logback-spring.xml
   level:
     root: INFO
     com.zzl.platform.auth: DEBUG
