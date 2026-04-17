@@ -1,9 +1,0 @@
-# 从Nacos读取security.properties的配置
-spring:
-  cloud:
-    nacos:
-      config:
-        ext-configs: # SCA 2023.0.1.3方式
-          - data-id: security.properties
-            group: ${NACOS_GROUP:DEFAULT_GROUP}
-            refresh: true
