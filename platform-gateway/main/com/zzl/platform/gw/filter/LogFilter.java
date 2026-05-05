@@ -39,8 +39,7 @@ public class LogFilter extends AbstractGatewayFilter {
         String method = getMethod(exchange);
         String ip = getRemoteIp(exchange);
 
-        // 将TraceId放入请求属性，方便后续过滤器使用
-        exchange.getAttributes().put(TRACE_ID_ATTR, traceId);
+        // 注意：不在此设置TRACE_ID_ATTR，避免覆盖MdcGatewayFilter已设置的traceId
 
         // 记录请求日志
         logRequest(exchange, traceId, path, method, ip, startTime);

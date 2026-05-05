@@ -56,6 +56,11 @@ public class MdcMyBatisInterceptor implements InnerInterceptor {
 
         } catch (Exception e) {
             logger.error("设置MDC上下文失败", e);
+        } finally {
+            // 恢复原始MDC上下文
+            if (oldContext != null) {
+                MDC.setContextMap(oldContext);
+            }
         }
     }
 

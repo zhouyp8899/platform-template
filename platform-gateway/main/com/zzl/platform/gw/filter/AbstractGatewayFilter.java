@@ -1,5 +1,6 @@
 package com.zzl.platform.gw.filter;
 
+import com.zzl.platform.common.core.util.TraceIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -97,7 +98,7 @@ public abstract class AbstractGatewayFilter implements GlobalFilter, Ordered {
      * 生成TraceId
      */
     protected String generateTraceId() {
-        return java.util.UUID.randomUUID().toString().replace("-", "");
+        return TraceIdGenerator.generate();
     }
 
     /**

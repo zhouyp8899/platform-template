@@ -132,7 +132,7 @@ public class RequestTraceFilter extends AbstractGatewayFilter {
 
     @Override
     public int getOrder() {
-        // 优先级最高，最先执行
-        return HIGHEST_PRECEDENCE;
+        // 在MdcGatewayFilter之后执行（MdcGatewayFilter=0，本filter=1）
+        return 1;
     }
 }

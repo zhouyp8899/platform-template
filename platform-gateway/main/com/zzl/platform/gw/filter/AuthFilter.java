@@ -37,9 +37,9 @@ public class AuthFilter extends AbstractGatewayFilter {
 
         String path = getPath(exchange);
 
-        // 检查白名单
+        // 白名单路径跳过Token校验（如登录接口）
         if (isWhitePath(path)) {
-            log.debug("Path is in whitelist: {}, skip auth", path);
+            log.debug("Path is in whitelist, skip auth: {}", path);
             return chain.filter(exchange);
         }
 
@@ -78,7 +78,8 @@ public class AuthFilter extends AbstractGatewayFilter {
      * 检查是否为白名单路径
      */
     private boolean isWhitePath(String path) {
-        return gatewayProperties.getWhitePaths().stream()
+        return gatewayProperties.getWhitePaths() != null
+                && gatewayProperties.getWhitePaths().stream()
                 .anyMatch(whitePath -> pathMatches(path, whitePath));
     }
 

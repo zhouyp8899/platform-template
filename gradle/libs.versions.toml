@@ -42,6 +42,7 @@ mysql-connector-j = { module = "com.mysql:mysql-connector-j",version.ref = "mysq
 jasypt-spring-boot = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "jasypt" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 hutool-all = { module = "cn.hutool:hutool-all", version.ref = "hutool" }
+hutool-core = { module = "cn.hutool:hutool-core", version.ref = "hutool" }
 fastjson2 = { module = "com.alibaba.fastjson2:fastjson2", version.ref = "fastjson2" }
 apache-commons-lang3 = { module = "org.apache.commons:commons-lang3" }
 

@@ -34,18 +34,18 @@ public class BlackWhiteListFilter extends AbstractGatewayFilter {
         String ip = getRemoteIp(exchange);
         String userId = getUserId(exchange);
 
+        // 白名单优先：白名单路径直接放行，不受黑名单限制
+        if (gatewayProperties.getWhitePaths() != null && !gatewayProperties.getWhitePaths().isEmpty()) {
+            if (isInWhiteList(path)) {
+                log.debug("Path is in whitelist, allowing: path={}", path);
+                return chain.filter(exchange);
+            }
+        }
+
         // 检查黑名单
         if (isInBlackList(ip, userId, exchange)) {
             log.warn("Request blocked by blacklist: ip={}, userId={}, path={}", ip, userId, path);
             return handleBlocked(exchange, "Access denied by blacklist");
-        }
-
-        // 检查白名单
-        if (gatewayProperties.getWhitePaths() != null && !gatewayProperties.getWhitePaths().isEmpty()) {
-            if (!isInWhiteList(path)) {
-                log.warn("Request blocked by whitelist: ip={}, userId={}, path={}", ip, userId, path);
-                return handleBlocked(exchange, "Access denied by whitelist");
-            }
         }
 
         return chain.filter(exchange);

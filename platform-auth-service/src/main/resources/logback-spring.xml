@@ -12,7 +12,7 @@
 
     <!-- 定义简洁的日志格式（开发环境） -->
     <property name="SIMPLE_LOG_PATTERN"
-              value="%d{HH:mm:ss.SSS} %clr(%-5level){faint} [%thread] %clr(%logger{36}){cyan} - %m%n%wEx"/>
+              value="%d{HH:mm:ss.SSS} %clr(%-5level){faint} [%thread] %clr(%logger{36}){cyan} traceId=%X{traceId:-N/A} - %m%n%wEx"/>
 
     <!-- 定义包含MDC信息的日志格式 -->
     <property name="MDC_LOG_PATTERN"
@@ -74,7 +74,7 @@
             <fileNamePattern>${LOG_HOME}/${APP_NAME}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndariTriggeringPolicy>
+            </timeBasedFileNamingAndTriggeringPolicy>
             <maxHistory>90</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
@@ -114,7 +114,7 @@
         <appender-ref ref="FILE_JSON"/>
         <queueSize>512</queueSize>
         <discardingThreshold>0</discardingThreshold>
-    </appender>
+    </appenderer>
 
     <!-- 开发环境配置 -->
     <springProfile name="dev">

@@ -4,22 +4,6 @@ spring:
   cloud:
     gateway:
       routes:
-        # MDC测试路由
-        - id: mdc-test-route
-          uri: lb://platform-auth-service
-          predicates:
-            - Path=/api/mdc-test/**
-          filters:
-            - StripPrefix=0
-
-        # 认证服务路由 - 登录接口
-        - id: auth-login-route
-          uri: lb://platform-auth-service
-          predicates:
-            - Path=/api/admin/auth/login
-          filters:
-            - StripPrefix=0
-
         # 认证服务路由 - 所有admin路径
         - id: auth-admin-route
           uri: lb://platform-auth-service

@@ -2,7 +2,6 @@ package com.zzl.platform.common.redis.service;
 
 import com.zzl.platform.common.redis.properties.RedisProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@ConditionalOnBean(RedisService.class)
 public class RedisCacheService {
 
     private final RedisService redisService;

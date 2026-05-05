@@ -11,7 +11,6 @@ public class Result<T> implements Serializable {
     private T data;
 
     private Result() {
-        Long timestamp = System.currentTimeMillis();
     }
 
     public static <T> Result<T> success(T data) {

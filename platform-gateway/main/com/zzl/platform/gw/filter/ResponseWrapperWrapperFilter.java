@@ -64,7 +64,7 @@ public class ResponseWrapperWrapperFilter extends AbstractGatewayFilter {
      */
     private String wrapResponse(ServerWebExchange exchange, String originalResponse) {
         // 如果已经是标准格式，直接返回
-        if (originalResponse.contains("\"code\":") && originalResponse.contains("\"message\":")) {
+        if (isStandardResponse(originalResponse)) {
             return originalResponse;
         }
 
@@ -80,16 +80,24 @@ public class ResponseWrapperWrapperFilter extends AbstractGatewayFilter {
                         traceId
                 );
             } else {
-                // 非JSON响应，直接返回
+                // 非JSON响应，直接返回（不包装）
                 return originalResponse;
             }
         } catch (Exception e) {
-            log.error("Failed to wrap response", e);
-            return String.format(
-                    "{\"code\":500,\"message\":\"Internal server error\",\"data\":null,\"traceId\":\"%s\"}",
-                    traceId
-            );
+            log.error("Failed to wrap response, returning original", e);
+            // 包装失败时返回原始响应，避免丢失下游服务的真实响应
+            return originalResponse;
         }
+    }
+
+    /**
+     * 判断是否为标准响应格式
+     */
+    private boolean isStandardResponse(String response) {
+        if (response == null || response.isEmpty()) {
+            return false;
+        }
+        return response.contains("\"code\":") && response.contains("\"message\":");
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.zzl.platform.gw.filter;
 
 import com.zzl.platform.common.core.util.MdcUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -17,6 +19,8 @@ import java.util.Map;
  */
 @Component
 public class MdcGatewayFilter implements GlobalFilter, Ordered {
+
+    private static final Logger log = LoggerFactory.getLogger(MdcGatewayFilter.class);
 
     /**
      * 请求头中携带追踪ID的键名
@@ -182,8 +186,10 @@ public class MdcGatewayFilter implements GlobalFilter, Ordered {
      * 带追踪ID的日志记录
      */
     private void loggerWithTrace(String traceId, String message, Object... args) {
-        String logMessage = String.format(message, args);
-        System.out.println("[Gateway MDC] traceId=" + traceId + " - " + logMessage);
+        if (log.isDebugEnabled()) {
+            String logMessage = String.format(message, args);
+            log.debug("[Gateway MDC] traceId=%s - %s", traceId, logMessage);
+        }
     }
 
     /**
@@ -193,8 +199,7 @@ public class MdcGatewayFilter implements GlobalFilter, Ordered {
         String logMessage = traceId != null ?
                 String.format("traceId=%s - %s", traceId, message) :
                 message;
-        System.err.println("[Gateway MDC ERROR] " + logMessage);
-        e.printStackTrace(System.err);
+        log.error("[Gateway MDC] {}", logMessage, e);
     }
 
     @Override
