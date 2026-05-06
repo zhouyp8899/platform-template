@@ -53,15 +53,18 @@ public class AuthFilter extends AbstractGatewayFilter {
 
         // 验证Token
         try {
-            if (!validateToken(token)) {
-                log.warn("Invalid token for path: {}", path);
+            String tokenType = extractTokenTypeFromToken(token);
+            String jwtSecret = getJwtSecret(tokenType);
+
+            if (!validateToken(token, jwtSecret)) {
+                log.warn("Invalid token for path: {}, tokenType: {}", path, tokenType);
                 return handleUnauthorized(exchange, "Invalid or expired authorization token");
             }
 
             // Token验证通过，提取用户信息并添加到请求头
-            String userId = extractUserIdFromToken(token);
-            String username = extractUsernameFromToken(token);
-            String tenantId = extractTenantIdFromToken(token);
+            String userId = extractUserIdFromToken(token, jwtSecret);
+            String username = extractUsernameFromToken(token, jwtSecret);
+            String tenantId = extractTenantIdFromToken(token, jwtSecret);
 
             if (userId != null || username != null || tenantId != null) {
                 exchange.getRequest().mutate()
@@ -71,7 +74,7 @@ public class AuthFilter extends AbstractGatewayFilter {
                         .build();
             }
 
-            log.debug("Token validated for path: {}, userId: {}, username: {}", path, userId, username);
+            log.debug("Token validated for path: {}, userId: {}, username: {}, tokenType: {}", path, userId, username, tokenType);
         } catch (Exception e) {
             log.error("Token validation error", e);
             return handleUnauthorized(exchange, "Token validation error");
@@ -109,25 +112,52 @@ public class AuthFilter extends AbstractGatewayFilter {
     }
 
     /**
+     * 从Token中提取token类型
+     */
+    private String extractTokenTypeFromToken(String token) {
+        try {
+            return JwtUtils.getClaim(token, "type") != null ? JwtUtils.getClaim(token, "type").toString() : "admin";
+        } catch (Exception e) {
+            log.debug("Failed to extract token type, default to admin", e);
+            return "admin";
+        }
+    }
+
+    /**
+     * 根据token类型获取JWT密钥
+     */
+    private String getJwtSecret(String tokenType) {
+        if ("h5".equals(tokenType)) {
+            return gatewayProperties.getAuth().getJwtSecretH5();
+        }
+        return gatewayProperties.getAuth().getJwtSecretAdmin();
+    }
+
+    /**
      * 验证Token
      */
-    private boolean validateToken(String token) {
+    private boolean validateToken(String token, String jwtSecret) {
         // 开发环境可跳过Token验证
         if (gatewayProperties.getAuth().isSkipTokenValidation()) {
             log.warn("Token validation skipped (dev mode)");
             return true;
         }
 
-        String jwtSecret = gatewayProperties.getAuth().getJwtSecret();
         return JwtUtils.validateToken(token, jwtSecret);
     }
 
     /**
      * 从Token中提取用户ID
      */
-    private String extractUserIdFromToken(String token) {
+    private String extractUserIdFromToken(String token, String jwtSecret) {
         try {
-            return JwtUtils.getUserId(token);
+            io.jsonwebtoken.Claims claims = io.jsonwebtoken.Jwts.parser()
+                    .verifyWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            Object userId = claims.get("userId");
+            return userId != null ? userId.toString() : null;
         } catch (Exception e) {
             log.debug("Failed to extract user ID from token", e);
             return null;
@@ -137,9 +167,14 @@ public class AuthFilter extends AbstractGatewayFilter {
     /**
      * 从Token中提取用户名
      */
-    private String extractUsernameFromToken(String token) {
+    private String extractUsernameFromToken(String token, String jwtSecret) {
         try {
-            return JwtUtils.getUsername(token);
+            io.jsonwebtoken.Claims claims = io.jsonwebtoken.Jwts.parser()
+                    .verifyWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return (String) claims.get("username");
         } catch (Exception e) {
             log.debug("Failed to extract username from token", e);
             return null;
@@ -149,9 +184,15 @@ public class AuthFilter extends AbstractGatewayFilter {
     /**
      * 从Token中提取租户ID
      */
-    private String extractTenantIdFromToken(String token) {
+    private String extractTenantIdFromToken(String token, String jwtSecret) {
         try {
-            return JwtUtils.getTenantId(token);
+            io.jsonwebtoken.Claims claims = io.jsonwebtoken.Jwts.parser()
+                    .verifyWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            Object tenantId = claims.get("tenantId");
+            return tenantId != null ? tenantId.toString() : null;
         } catch (Exception e) {
             log.debug("Failed to extract tenant ID from token", e);
             return null;

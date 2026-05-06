@@ -6,6 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -21,10 +22,16 @@ import java.util.Map;
 @Service
 public class JwtServiceImpl implements JwtService {
 
+    @Value("${auth.jwt.secret-admin:platform-admin-jwt-secret-key-change-in-production}")
+    private String jwtSecretAdmin;
+
+    @Value("${auth.jwt.secret-h5:platform-h5-jwt-secret-key-change-in-production}")
+    private String jwtSecretH5;
+
     private SecretKey getSecretKey(String tokenType) {
-        String secret = AuthConstants.JWT_SECRET_ADMIN;
+        String secret = jwtSecretAdmin;
         if (AuthConstants.TOKEN_TYPE_H5.equals(tokenType)) {
-            secret = AuthConstants.JWT_SECRET_H5;
+            secret = jwtSecretH5;
         }
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

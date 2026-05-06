@@ -65,3 +65,9 @@ platform:
     overflow: true          # 溢出总页数后进行处理（默认false）
     optimize-count-sql: true  # 优化 COUNT SQL 查询（默认true）
     safe-sql: true         # 启用安全 SQL 检查（默认true）
+
+# JWT配置（建议从Nacos配置中心读取）
+auth:
+  jwt:
+    secret-admin: ${JWT_SECRET_ADMIN:platform-admin-jwt-secret-key-change-in-production}
+    secret-h5: ${JWT_SECRET_H5:platform-h5-jwt-secret-key-change-in-production}

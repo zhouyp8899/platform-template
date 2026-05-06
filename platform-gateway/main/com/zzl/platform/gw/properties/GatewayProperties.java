@@ -60,6 +60,7 @@ public class GatewayProperties {
     /**
      * 鉴权配置
      */
+    @org.springframework.boot.context.properties.NestedConfigurationProperty
     private Auth auth = new Auth();
 
     /**
@@ -121,9 +122,14 @@ public class GatewayProperties {
         private String tokenPrefix = "Bearer ";
 
         /**
-         * JWT密钥（建议从Nacos配置中心读取）
+         * JWT密钥-管理后台（建议从Nacos配置中心读取）
          */
-        private String jwtSecret = "platform-gateway-secret-key-change-in-production";
+        private String jwtSecretAdmin = "platform-admin-jwt-secret-key-change-in-production";
+
+        /**
+         * JWT密钥-H5用户（建议从Nacos配置中心读取）
+         */
+        private String jwtSecretH5 = "platform-h5-jwt-secret-key-change-in-production";
 
         /**
          * Token过期时间（秒）

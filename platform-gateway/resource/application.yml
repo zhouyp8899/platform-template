@@ -25,6 +25,10 @@ platform:
     black-white-list-enabled: true
     # 监控配置
     metrics-enabled: true
+    # JWT密钥配置
+    auth:
+      jwt-secret-admin: ${JWT_SECRET_ADMIN:platform-admin-jwt-secret-key-change-in-production}
+      jwt-secret-h5: ${JWT_SECRET_H5:platform-h5-jwt-secret-key-change-in-production}
     whitePaths:
       - /api/admin/auth/login
       - /v3/api-docs/**

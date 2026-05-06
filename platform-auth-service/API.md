@@ -6,10 +6,10 @@
 - API前缀：
     - 管理端：`/api/admin`
     - H5端：`/api/h5`
-- 认证方式：JWT Bearer Token
+- 认证方式：JWT Token
 - 请求头：
-    - `Authorization: Bearer {token}`
-    - `X-User-Id: {userId}`
+    - `Authorization: {token}`
+
 
 ---
 
@@ -62,20 +62,20 @@
 
 - **接口地址**：`POST /api/admin/auth/logout`
 - **请求头**：
-    - `X-User-Id: {userId}`
-    - `Authorization: Bearer {token}`
+
+    - `Authorization: {token}`
 
 ### 1.4 获取当前用户信息
 
 - **接口地址**：`GET /api/admin/auth/current`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ### 1.5 修改当前用户密码
 
 - **接口地址**：`PUT /api/admin/auth/current/change-password`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -125,8 +125,8 @@
 
 - **接口接口**：`POST /api/h5/auth/logout`
 - **请求头**：
-    - `X-User-Id: {userId}`
-    - `Authorization: Bearer {token}`
+
+    - `Authorization: {token}`
 
 ---
 
@@ -192,7 +192,7 @@
 - **接口地址**：`POST /api/admin/system/user/add`
 - **权限**：`system:user:add`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -214,7 +214,7 @@
 - **接口地址**：`PUT /api/admin/system/user/edit`
 - **权限**：`system:user:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -236,14 +236,14 @@
 - **接口地址**`DELETE /api/admin/system/user/delete/{id}`
 - **权限**：`system:user:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ### 3.6 批量删除用户
 
 - **接口地址**：`DELETE /api/admin/system/user/batch-delete`
 - **权限**：`system:user:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   [1, 2, 3]
@@ -254,7 +254,7 @@
 - **接口地址**：`PUT /api/admin/system/user/reset-password`
 - **权限**：`system:user:reset`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   1
@@ -265,7 +265,7 @@
 - **接口地址**：`PUT /api/admin/system/user/change-status`
 - **权限**：`system:user:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -279,7 +279,7 @@
 - **接口地址**：`POST /api/admin/system/user/grant-roles`
 - **权限**：`system:user:grant`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -325,7 +325,7 @@
 - **接口地址**：`POST /api/admin/system/role/add`
 - **权限**：`system:role:add`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -345,7 +345,7 @@
 - **接口地址**：`PUT /api/admin/system/role/edit`
 - **权限**：`system:role:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -366,14 +366,14 @@
 - **接口地址**：`DELETE /api/admin/system/role/delete/{id}`
 - **权限**：`system:role:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ### 4.7 为角色分配权限
 
 - **接口地址**：`POST /api/admin/system/role/grant-permissions`
 - **权限**：`system:role:grant`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -419,7 +419,7 @@
 - **接口地址**：`POST /api/admin/system/permission/add`
 - **权限**：`system:permission:add`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -441,7 +441,7 @@
 - **接口地址**：`PUT /api/admin/system/permission/edit`
 - **权限**：`system:permission:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -464,7 +464,7 @@
 - **接口地址**：`DELETE /`api/admin/system/permission/delete/{id}`
 - **权限**：`system:permission:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ---
 
@@ -480,7 +480,7 @@
 - **接口地址**：`GET /api/admin/system/menu/tree`
 - **权限**：`system:menu:list`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ### 6.3 查询菜单详情
 
@@ -492,7 +492,7 @@
 - **接口地址**：`POST /api/admin/system/menu/add`
 - **权限**：`system:menu:add`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -518,7 +518,7 @@
 - **接口地址**：`PUT /api/admin/system/menu/edit`
 - **权限**：`system:menu:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -545,7 +545,7 @@
 - **接口地址**：`DELETE /api/admin/system/menu/delete/{id}`
 - **权限**：`system:menu:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ---
 
@@ -566,7 +566,7 @@
 - **接口地址**：`POST /api/admin/system/dept/add`
 - **权限**：`system:dept:add`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -587,7 +587,7 @@
 - **接口地址**：`PUT /api/admin/system/dept/edit`
 - **权限**：`system:dept:edit`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 - **请求参数**：
   ```json
   {
@@ -609,7 +609,7 @@
 - **接口地址**：`DELETE /api/admin/system/dept/delete/{id}`
 - **权限**：`system:dept:delete`
 - **请求头**：
-    - `X-User-Id: {userId}`
+
 
 ---
 

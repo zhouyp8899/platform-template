@@ -9,11 +9,11 @@ spring:
       - optional:nacos:security.properties?!refreshEnabled=true
   cloud:
     nacos:
-      server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+      server-addr: ${NACOS_SERVER:127.0.0.1:8848}
       username: ${NACOS_USER:nacos}
-      password: ${NACOS_PWD:nacos}
+      password: ${NACOS_PASSWORD:nacos}
       discovery:
         enabled: true
-        server-addr: ${NACOS_ADDR:127.0.0.1:8848}
+        server-addr: ${NACOS_SERVER:127.0.0.1:8848}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
         namespace: ${NACOS_NAMESPACE:}
