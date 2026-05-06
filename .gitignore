@@ -45,3 +45,6 @@ bin/
 /logs/platform-auth-service/all.log
 /logs/platform-gateway/all.log
 /logs/**
+.idea/gradle.xml
+.idea/misc.xml
+.idea/vcs.xml

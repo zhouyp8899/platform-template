@@ -5,6 +5,7 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="ms-21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -17,7 +18,6 @@
             <option value="$PROJECT_DIR$/platform-gateway" />
           </set>
         </option>
-        <option name="myGradleHome" value="D:\Program Files\gradle-8.10.2" />
       </GradleProjectSettings>
     </option>
   </component>
