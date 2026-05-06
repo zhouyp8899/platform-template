@@ -7,6 +7,15 @@ dependencies {
     api libs.hutool.core
     api libs.jasypt.spring.boot
 
+    // JWT支持
+    compileOnly libs.jjwt.api
+
+    // Feign客户端
+    compileOnly libs.spring.cloud.starter.openfeign
+
+    // Jackson
+    compileOnly libs.jackson.databind
+
     // 日志 API（不引入具体实现）
     compileOnly 'org.slf4j:slf4j-api'
     compileOnly libs.lombok

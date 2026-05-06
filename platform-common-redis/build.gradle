@@ -13,6 +13,10 @@ dependencies {
     api libs.spring.cloud.context
     // 👇 新增：确保 RedisTemplate 支持 java.time
     api libs.jackson.jsr310
+
+    // 参数校验
+    implementation libs.spring.boot.starter.validation
+
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 }

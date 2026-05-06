@@ -64,3 +64,9 @@ spring-cloud-starter-circuitbreaker-reactor-resilience4j = { module = "org.sprin
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version = "0.12.3" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version = "0.12.3" }
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version = "0.12.3" }
+
+# Feign客户端
+openfeign = { module = "io.github.openfeign:feign" }
+feign-okhttp = { module = "io.github.openfeign:feign-okhttp" }
+feign-jackson = { module = "io.github.openfeign:feign-jackson" }
+spring-cloud-starter-openfeign = { module = "org.springframework.cloud:spring-cloud-starter-openfeign" }

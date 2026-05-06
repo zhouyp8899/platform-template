@@ -1,5 +1,6 @@
 package com.zzl.platform.gw.filter;
 
+import com.zzl.platform.common.core.util.JwtUtils;
 import com.zzl.platform.gw.properties.GatewayProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -59,13 +60,18 @@ public class AuthFilter extends AbstractGatewayFilter {
 
             // Token验证通过，提取用户信息并添加到请求头
             String userId = extractUserIdFromToken(token);
-            if (userId != null) {
+            String username = extractUsernameFromToken(token);
+            String tenantId = extractTenantIdFromToken(token);
+
+            if (userId != null || username != null || tenantId != null) {
                 exchange.getRequest().mutate()
-                        .header("X-User-Id", userId)
+                        .header("X-User-Id", userId != null ? userId : "")
+                        .header("X-Username", username != null ? username : "")
+                        .header("X-Tenant-Id", tenantId != null ? tenantId : "")
                         .build();
             }
 
-            log.debug("Token validated for path: {}, userId: {}", path, userId);
+            log.debug("Token validated for path: {}, userId: {}, username: {}", path, userId, username);
         } catch (Exception e) {
             log.error("Token validation error", e);
             return handleUnauthorized(exchange, "Token validation error");
@@ -104,7 +110,6 @@ public class AuthFilter extends AbstractGatewayFilter {
 
     /**
      * 验证Token
-     * 简化版：实际应调用auth-service或使用JWT库验证
      */
     private boolean validateToken(String token) {
         // 开发环境可跳过Token验证
@@ -113,14 +118,8 @@ public class AuthFilter extends AbstractGatewayFilter {
             return true;
         }
 
-        // TODO: 实际项目中应该：
-        // 1. 使用JWT库验证Token签名
-        // 2. 检查Token是否过期
-        // 3. 调用auth-service验证Token有效性
-        // 4. 检查Token是否被吊销
-
-        // 简化版：检查Token不为空且格式正确
-        return token != null && !token.isEmpty() && token.split("\\.").length >= 2;
+        String jwtSecret = gatewayProperties.getAuth().getJwtSecret();
+        return JwtUtils.validateToken(token, jwtSecret);
     }
 
     /**
@@ -128,22 +127,35 @@ public class AuthFilter extends AbstractGatewayFilter {
      */
     private String extractUserIdFromToken(String token) {
         try {
-            String[] parts = token.split("\\.");
-            if (parts.length >= 2) {
-                String payload = parts[1];
-                // 简化版：从payload中提取userId
-                if (payload.contains("\"userId\"")) {
-                    int userIdStart = payload.indexOf("\"userId\"") + 8;
-                    int userIdEnd = payload.indexOf("\"", userIdStart);
-                    if (userIdEnd > userIdStart) {
-                        return payload.substring(userIdStart, userIdEnd);
-                    }
-                }
-            }
+            return JwtUtils.getUserId(token);
         } catch (Exception e) {
             log.debug("Failed to extract user ID from token", e);
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * 从Token中提取用户名
+     */
+    private String extractUsernameFromToken(String token) {
+        try {
+            return JwtUtils.getUsername(token);
+        } catch (Exception e) {
+            log.debug("Failed to extract username from token", e);
+            return null;
+        }
+    }
+
+    /**
+     * 从Token中提取租户ID
+     */
+    private String extractTenantIdFromToken(String token) {
+        try {
+            return JwtUtils.getTenantId(token);
+        } catch (Exception e) {
+            log.debug("Failed to extract tenant ID from token", e);
+            return null;
+        }
     }
 
     /**
