@@ -46,6 +46,15 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     List<String> selectPermissionCodesByRoleId(@Param("roleId") Long roleId);
 
     /**
+     * 查询角色的菜单ID列表
+     */
+    @Select("SELECT rm.menu_id " +
+            "FROM t_sys_role_menu rm " +
+            "INNER JOIN t_sys_menu m ON rm.menu_id = m.id " +
+            "WHERE rm.role_id = #{roleId} AND m.status = 1 AND m.deleted = 0")
+    List<Long> selectMenuIdsByRoleId(@Param("roleId") Long roleId);
+
+    /**
      * 查询角色的用户数量
      */
     @Select("SELECT COUNT(1) FROM t_sys_user_role WHERE role_id = #{roleId}")

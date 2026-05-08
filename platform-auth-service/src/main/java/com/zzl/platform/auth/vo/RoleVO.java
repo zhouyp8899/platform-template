@@ -49,9 +49,14 @@ public class RoleVO {
     private Integer isSystem;
 
     /**
-     * 状态
+     * 状态: 1-正常, 2-禁用
      */
     private Integer status;
+
+    /**
+     * 状态描述
+     */
+    private String statusDesc;
 
     /**
      * 权限ID列表
@@ -62,6 +67,11 @@ public class RoleVO {
      * 权限编码列表
      */
     private List<String> permissionCodes;
+
+    /**
+     * 菜单ID列表
+     */
+    private List<Long> menuIds;
 
     /**
      * 用户数量

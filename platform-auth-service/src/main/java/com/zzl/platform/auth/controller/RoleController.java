@@ -1,6 +1,7 @@
 package com.zzl.platform.auth.controller;
 
 import com.zzl.platform.auth.aspect.RequiresPermission;
+import com.zzl.platform.auth.dto.GrantMenusRequest;
 import com.zzl.platform.auth.dto.GrantPermissionsRequest;
 import com.zzl.platform.auth.dto.RoleAddRequest;
 import com.zzl.platform.auth.dto.RoleEditRequest;
@@ -149,6 +150,37 @@ public class RoleController {
             return Result.success(permissionIds);
         } catch (Exception e) {
             log.error("Get role permissions error", e);
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 为角色分配菜单
+     */
+    @PostMapping("/grant-menus")
+    @RequiresPermission(value = "system:role:grant", desc = "角色授权")
+    public Result<Void> grantMenus(@RequestBody GrantMenusRequest request,
+                                   @RequestHeader("X-User-Id") Long operatorId) {
+        try {
+            roleService.grantMenus(request, operatorId);
+            return Result.success("菜单分配成功", null);
+        } catch (Exception e) {
+            log.error("Grant menus error", e);
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取角色的菜单列表
+     */
+    @GetMapping("/{id}/menus")
+    @RequiresPermission(value = "system:role:get", desc = "角色详情")
+    public Result<List<Long>> getRoleMenus(@PathVariable Long id) {
+        try {
+            List<Long> menuIds = roleService.getRoleMenus(id);
+            return Result.success(menuIds);
+        } catch (Exception e) {
+            log.error("Get role menus error", e);
             return Result.fail(e.getMessage());
         }
     }

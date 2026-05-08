@@ -55,6 +55,11 @@ public class RoleEditRequest {
     private List<Long> permissionIds;
 
     /**
+     * 菜单ID列表
+     */
+    private List<Long> menuIds;
+
+    /**
      * 排序
      */
     private Integer sort;

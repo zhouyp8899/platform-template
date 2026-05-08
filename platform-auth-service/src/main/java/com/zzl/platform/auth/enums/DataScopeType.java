@@ -36,9 +36,9 @@ public enum DataScopeType {
     CUSTOM("CUSTOM", "自定义部门");
 
     @EnumValue
+    @JsonValue
     private final String code;
 
-    @JsonValue
     private final String desc;
 
     DataScopeType(String code, String desc) {

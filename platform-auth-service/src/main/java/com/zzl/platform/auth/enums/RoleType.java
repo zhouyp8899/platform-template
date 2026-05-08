@@ -21,9 +21,9 @@ public enum RoleType {
     BUSINESS("BUSINESS", "业务角色");
 
     @EnumValue
+    @JsonValue
     private final String code;
 
-    @JsonValue
     private final String desc;
 
     RoleType(String code, String desc) {

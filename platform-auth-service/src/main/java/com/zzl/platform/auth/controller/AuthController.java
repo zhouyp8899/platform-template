@@ -3,14 +3,18 @@ package com.zzl.platform.auth.controller;
 import com.zzl.platform.auth.dto.ChangePasswordRequest;
 import com.zzl.platform.auth.dto.LoginRequest;
 import com.zzl.platform.auth.dto.RefreshTokenRequest;
+import com.zzl.platform.auth.service.MenuService;
 import com.zzl.platform.auth.service.UserService;
 import com.zzl.platform.auth.vo.LoginResponse;
+import com.zzl.platform.auth.vo.MenuVO;
 import com.zzl.platform.auth.vo.UserVO;
 import com.zzl.platform.common.core.res.Result;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 认证控制器
@@ -22,9 +26,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final MenuService menuService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, MenuService menuService) {
         this.userService = userService;
+        this.menuService = menuService;
     }
 
     /**
@@ -98,6 +104,20 @@ public class AuthController {
             return Result.success();
         } catch (Exception e) {
             log.error("Change current user password error", e);
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取当前用户菜单树（前端侧边栏用）
+     */
+    @GetMapping("/menus")
+    public Result<List<MenuVO>> getCurrentUserMenus(@RequestHeader("X-User-Id") Long userId) {
+        try {
+            List<MenuVO> menus = menuService.treeUserMenus(userId);
+            return Result.success(menus);
+        } catch (Exception e) {
+            log.error("Get current user menus error", e);
             return Result.fail(e.getMessage());
         }
     }

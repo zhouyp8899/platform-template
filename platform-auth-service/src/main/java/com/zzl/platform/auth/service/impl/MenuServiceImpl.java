@@ -5,6 +5,7 @@ import com.zzl.platform.auth.dto.MenuAddRequest;
 import com.zzl.platform.auth.dto.MenuEditRequest;
 import com.zzl.platform.auth.entity.SysMenu;
 import com.zzl.platform.auth.mapper.SysMenuMapper;
+import com.zzl.platform.auth.mapper.SysRoleMenuMapper;
 import com.zzl.platform.auth.service.MenuService;
 import com.zzl.platform.auth.vo.MenuVO;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,11 @@ import java.util.List;
 public class MenuServiceImpl implements MenuService {
 
     private final SysMenuMapper menuMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
 
-    public MenuServiceImpl(SysMenuMapper menuMapper) {
+    public MenuServiceImpl(SysMenuMapper menuMapper, SysRoleMenuMapper roleMenuMapper) {
         this.menuMapper = menuMapper;
+        this.roleMenuMapper = roleMenuMapper;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class MenuServiceImpl implements MenuService {
         // 1. 查询所有菜单
         List<MenuVO> allMenus = menuMapper.selectAllMenus();
 
-        // 2. 构建树形结构
+        // 2. 补充描述字段
+        fillMenuDesc(allMenus);
+
+        // 3. 构建树形结构
         return buildMenuTree(allMenus, 0L);
     }
 
@@ -42,7 +48,10 @@ public class MenuServiceImpl implements MenuService {
         // 1. 查询用户可见菜单
         List<MenuVO> userMenus = menuMapper.selectMenusByUserId(userId);
 
-        // 2. 构建树形结构
+        // 2. 补充描述字段
+        fillMenuDesc(userMenus);
+
+        // 3. 构建树形结构
         return buildMenuTree(userMenus, 0L);
     }
 
@@ -151,9 +160,24 @@ public class MenuServiceImpl implements MenuService {
 
         // 3. 删除菜单
         menuMapper.deleteById(menuId);
+        roleMenuMapper.deleteByMenuId(menuId);
     }
 
     // ==================== 私有方法 ====================
+
+    /**
+     * 为Mapper直接查询的MenuVO补充描述字段
+     */
+    private void fillMenuDesc(List<MenuVO> menus) {
+        for (MenuVO menu : menus) {
+            if (menu.getMenuType() != null) {
+                menu.setMenuTypeDesc(menu.getMenuType().getDesc());
+            }
+            if (menu.getStatus() != null) {
+                menu.setStatusDesc(menu.getStatus() == 1 ? "正常" : "禁用");
+            }
+        }
+    }
 
     /**
      * 构建菜单树
@@ -193,6 +217,7 @@ public class MenuServiceImpl implements MenuService {
         menuVO.setMenuName(menu.getMenuName());
         menuVO.setParentId(menu.getParentId());
         menuVO.setMenuType(menu.getMenuType());
+        menuVO.setMenuTypeDesc(menu.getMenuType() != null ? menu.getMenuType().getDesc() : null);
         menuVO.setMenuIcon(menu.getMenuIcon());
         menuVO.setMenuPath(menu.getMenuPath());
         menuVO.setComponent(menu.getComponent());
@@ -202,6 +227,7 @@ public class MenuServiceImpl implements MenuService {
         menuVO.setIsExternal(menu.getIsExternal());
         menuVO.setMenuSort(menu.getMenuSort());
         menuVO.setStatus(menu.getStatus());
+        menuVO.setStatusDesc(menu.getStatus() != null ? (menu.getStatus() == 1 ? "正常" : "禁用") : null);
         menuVO.setRemark(menu.getRemark());
         menuVO.setCreateTime(menu.getCreateTime());
         menuVO.setUpdateTime(menu.getUpdateTime());

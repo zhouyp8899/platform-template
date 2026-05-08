@@ -586,14 +586,23 @@ public class UserServiceImpl implements UserService {
         userVO.setUserType(user.getUserType());
         userVO.setDataScope(user.getDataScope());
         userVO.setStatus(user.getStatus());
+        userVO.setStatusDesc(user.getStatus() != null ? user.getStatus().getDesc() : null);
+        userVO.setLockTime(user.getLockTime());
+        userVO.setLoginFailCount(user.getLoginFailCount());
         userVO.setLastLoginTime(user.getLastLoginTime());
         userVO.setLastLoginIp(user.getLastLoginIp());
         userVO.setRemark(user.getRemark());
         userVO.setCreateTime(user.getCreateTime());
         userVO.setUpdateTime(user.getUpdateTime());
 
+        List<Long> roleIds = getUserRoles(user.getId());
+        userVO.setRoleIds(roleIds);
+
         List<String> roleCodes = getUserRolesCodes(user.getId());
         userVO.setRoleCodes(roleCodes);
+
+        List<String> roleNames = userMapper.selectRoleNamesByUserId(user.getId());
+        userVO.setRoleNames(roleNames);
 
         return userVO;
     }
@@ -609,9 +618,14 @@ public class UserServiceImpl implements UserService {
         userInfo.setUserId(user.getId());
         userInfo.setUsername(user.getUsername());
         userInfo.setRealName(user.getRealName());
+        userInfo.setNickName(user.getNickName());
         userInfo.setPhone(user.getPhone());
         userInfo.setEmail(user.getEmail());
-        userInfo.setRoles(roles);
+        userInfo.setAvatar(user.getAvatar());
+        userInfo.setDeptId(user.getDeptId());
+        userInfo.setStatus(user.getStatus());
+        userInfo.setStatusDesc(user.getStatus() != null ? user.getStatus().getDesc() : null);
+        userInfo.setRoleCodes(roles);
         userInfo.setPermissions(permissions);
         response.setUserInfo(userInfo);
 

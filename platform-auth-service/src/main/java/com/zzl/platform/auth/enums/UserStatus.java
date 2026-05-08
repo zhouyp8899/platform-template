@@ -26,9 +26,9 @@ public enum UserStatus {
     LOCKED(3, "锁定");
 
     @EnumValue
+    @JsonValue
     private final Integer code;
 
-    @JsonValue
     private final String desc;
 
     UserStatus(Integer code, String desc) {

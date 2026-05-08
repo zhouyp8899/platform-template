@@ -3,12 +3,15 @@ package com.zzl.platform.auth.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zzl.platform.auth.dto.GrantMenusRequest;
 import com.zzl.platform.auth.dto.GrantPermissionsRequest;
 import com.zzl.platform.auth.dto.RoleAddRequest;
 import com.zzl.platform.auth.dto.RoleEditRequest;
 import com.zzl.platform.auth.entity.SysRole;
+import com.zzl.platform.auth.entity.SysRoleMenu;
 import com.zzl.platform.auth.entity.SysRolePermission;
 import com.zzl.platform.auth.mapper.SysRoleMapper;
+import com.zzl.platform.auth.mapper.SysRoleMenuMapper;
 import com.zzl.platform.auth.mapper.SysRolePermissionMapper;
 import com.zzl.platform.auth.service.RoleService;
 import com.zzl.platform.auth.vo.PageResponse;
@@ -32,11 +35,14 @@ public class RoleServiceImpl implements RoleService {
 
     private final SysRoleMapper roleMapper;
     private final SysRolePermissionMapper rolePermissionMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
 
     public RoleServiceImpl(SysRoleMapper roleMapper,
-                           SysRolePermissionMapper rolePermissionMapper) {
+                           SysRolePermissionMapper rolePermissionMapper,
+                           SysRoleMenuMapper roleMenuMapper) {
         this.roleMapper = roleMapper;
         this.rolePermissionMapper = rolePermissionMapper;
+        this.roleMenuMapper = roleMenuMapper;
     }
 
     @Override
@@ -103,6 +109,11 @@ public class RoleServiceImpl implements RoleService {
             grantPermissionsToRole(role.getId(), request.getPermissionIds(), operator);
         }
 
+        // 分配菜单
+        if (request.getMenuIds() != null && !request.getMenuIds().isEmpty()) {
+            grantMenusToRole(role.getId(), request.getMenuIds(), operator);
+        }
+
         return role.getId();
     }
 
@@ -144,6 +155,11 @@ public class RoleServiceImpl implements RoleService {
         if (request.getPermissionIds() != null) {
             grantPermissionsToRole(role.getId(), request.getPermissionIds(), operator);
         }
+
+        // 重新分配菜单
+        if (request.getMenuIds() != null) {
+            grantMenusToRole(role.getId(), request.getMenuIds(), operator);
+        }
     }
 
     @Override
@@ -167,6 +183,7 @@ public class RoleServiceImpl implements RoleService {
 
         roleMapper.deleteById(roleId);
         rolePermissionMapper.deleteByRoleId(roleId);
+        roleMenuMapper.deleteByRoleId(roleId);
     }
 
     @Override
@@ -178,6 +195,17 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Long> getRolePermissions(Long roleId) {
         return roleMapper.selectPermissionIdsByRoleId(roleId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void grantMenus(GrantMenusRequest request, Long operator) {
+        grantMenusToRole(request.getRoleId(), request.getMenuIds(), operator);
+    }
+
+    @Override
+    public List<Long> getRoleMenus(Long roleId) {
+        return roleMapper.selectMenuIdsByRoleId(roleId);
     }
 
     @Override
@@ -210,6 +238,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
+     * 为角色分配菜单
+     */
+    private void grantMenusToRole(Long roleId, List<Long> menuIds, Long operator) {
+        roleMenuMapper.deleteByRoleId(roleId);
+
+        if (menuIds != null && !menuIds.isEmpty()) {
+            List<SysRoleMenu> roleMenus = new ArrayList<>();
+            for (Long menuId : menuIds) {
+                SysRoleMenu roleMenu = new SysRoleMenu();
+                roleMenu.setRoleId(roleId);
+                roleMenu.setMenuId(menuId);
+                roleMenu.setCreateTime(LocalDateTime.now());
+                roleMenu.setCreateBy(operator);
+                roleMenus.add(roleMenu);
+            }
+            roleMenuMapper.batchInsert(roleMenus);
+        }
+    }
+
+    /**
      * 转换为RoleVO
      */
     private RoleVO convertToRoleVO(SysRole role) {
@@ -222,6 +270,7 @@ public class RoleServiceImpl implements RoleService {
         roleVO.setDescription(role.getDescription());
         roleVO.setIsSystem(role.getIsSystem());
         roleVO.setStatus(role.getStatus());
+        roleVO.setStatusDesc(role.getStatus() != null ? (role.getStatus() == 1 ? "正常" : "禁用") : null);
         roleVO.setSort(role.getSort());
         roleVO.setCreateTime(role.getCreateTime());
         roleVO.setUpdateTime(role.getUpdateTime());
@@ -232,6 +281,10 @@ public class RoleServiceImpl implements RoleService {
 
         List<String> permissionCodes = roleMapper.selectPermissionCodesByRoleId(role.getId());
         roleVO.setPermissionCodes(permissionCodes);
+
+        // 查询菜单信息
+        List<Long> menuIds = roleMapper.selectMenuIdsByRoleId(role.getId());
+        roleVO.setMenuIds(menuIds);
 
         // 查询用户数量
         long userCount = roleMapper.selectUserCountByRoleId(role.getId());

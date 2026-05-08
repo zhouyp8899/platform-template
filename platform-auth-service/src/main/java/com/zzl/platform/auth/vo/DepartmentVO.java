@@ -62,9 +62,14 @@ public class DepartmentVO {
     private String email;
 
     /**
-     * 状态
+     * 状态: 1-正常, 2-禁用
      */
     private Integer status;
+
+    /**
+     * 状态描述
+     */
+    private String statusDesc;
 
     /**
      * 用户数量

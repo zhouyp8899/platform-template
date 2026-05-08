@@ -30,7 +30,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     List<MenuVO> selectAllMenus();
 
     /**
-     * 查询用户可见菜单树
+     * 查询用户可见菜单树（通过角色-菜单直接关联）
      */
     @Select("<script>" +
             "SELECT DISTINCT " +
@@ -38,9 +38,8 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
             "  m.component, m.redirect, m.is_cache, m.is_visible, m.is_external, " +
             "  m.menu_sort, m.status, m.remark, m.create_time, m.update_time " +
             "FROM t_sys_menu m " +
-            "INNER JOIN t_sys_menu_permission mp ON m.id = mp.menu_id " +
-            "INNER JOIN t_sys_role_permission rp ON mp.permission_id = rp.permission_id " +
-            "INNER JOIN t_sys_user_role ur ON rp.role_id = ur.role_id " +
+            "INNER JOIN t_sys_role_menu rm ON m.id = rm.menu_id " +
+            "INNER JOIN t_sys_user_role ur ON rm.role_id = ur.role_id " +
             "WHERE ur.user_id = #{userId} AND m.status = 1 AND m.deleted = 0 " +
             "ORDER BY m.parent_id, m.menu_sort " +
             "</script>")

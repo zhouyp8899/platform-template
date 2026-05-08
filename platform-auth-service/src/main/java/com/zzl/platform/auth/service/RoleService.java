@@ -1,5 +1,6 @@
 package com.zzl.platform.auth.service;
 
+import com.zzl.platform.auth.dto.GrantMenusRequest;
 import com.zzl.platform.auth.dto.GrantPermissionsRequest;
 import com.zzl.platform.auth.entity.SysRole;
 import com.zzl.platform.auth.vo.PageResponse;
@@ -77,6 +78,22 @@ public interface RoleService {
      * @return 权限ID列表
      */
     List<Long> getRolePermissions(Long roleId);
+
+    /**
+     * 为角色分配菜单
+     *
+     * @param request  分配菜单请求
+     * @param operator 操作人ID
+     */
+    void grantMenus(GrantMenusRequest request, Long operator);
+
+    /**
+     * 获取角色的菜单列表
+     *
+     * @param roleId 角色ID
+     * @return 菜单ID列表
+     */
+    List<Long> getRoleMenus(Long roleId);
 
     /**
      * 根据角色编码查询角色

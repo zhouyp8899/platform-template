@@ -13,22 +13,22 @@ public enum MenuType {
     /**
      * 目录
      */
-    DIRECTORY("M", "目录"),
+    DIRECTORY("D", "目录"),
 
     /**
      * 菜单
      */
-    MENU("C", "菜单"),
+    MENU("M", "菜单"),
 
     /**
      * 按钮
      */
-    BUTTON("F", "按钮");
+    BUTTON("B", "按钮");
 
     @EnumValue
+    @JsonValue
     private final String code;
 
-    @JsonValue
     private final String desc;
 
     MenuType(String code, String desc) {

@@ -21,9 +21,9 @@ public enum UserType {
     ADMIN("ADMIN", "管理员");
 
     @EnumValue
+    @JsonValue
     private final String code;
 
-    @JsonValue
     private final String desc;
 
     UserType(String code, String desc) {

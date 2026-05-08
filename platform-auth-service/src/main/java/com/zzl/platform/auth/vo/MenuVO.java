@@ -28,9 +28,14 @@ public class MenuVO {
     private Long parentId;
 
     /**
-     * 菜单类型
+     * 菜单类型: M-目录, C-菜单, F-按钮
      */
     private MenuType menuType;
+
+    /**
+     * 菜单类型描述
+     */
+    private String menuTypeDesc;
 
     /**
      * 菜单图标
@@ -78,9 +83,14 @@ public class MenuVO {
     private String permissionCode;
 
     /**
-     * 状态
+     * 状态: 1-正常, 2-禁用
      */
     private Integer status;
+
+    /**
+     * 状态描述
+     */
+    private String statusDesc;
 
     /**
      * 备注

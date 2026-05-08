@@ -1,5 +1,6 @@
 package com.zzl.platform.auth.vo;
 
+import com.zzl.platform.auth.enums.UserStatus;
 import lombok.Data;
 
 /**
@@ -76,9 +77,19 @@ public class LoginResponse {
         private String deptName;
 
         /**
+         * 状态
+         */
+        private UserStatus status;
+
+        /**
+         * 状态描述
+         */
+        private String statusDesc;
+
+        /**
          * 角色编码列表
          */
-        private java.util.List<String> roles;
+        private java.util.List<String> roleCodes;
 
         /**
          * 权限编码列表

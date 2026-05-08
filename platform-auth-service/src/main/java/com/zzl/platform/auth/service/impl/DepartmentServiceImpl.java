@@ -210,6 +210,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         deptVO.setLeaderPhone(department.getLeaderPhone());
         deptVO.setEmail(department.getEmail());
         deptVO.setStatus(department.getStatus());
+        deptVO.setStatusDesc(department.getStatus() != null ? (department.getStatus() == 1 ? "正常" : "禁用") : null);
         deptVO.setRemark(department.getRemark());
         deptVO.setCreateTime(department.getCreateTime());
         deptVO.setUpdateTime(department.getUpdateTime());

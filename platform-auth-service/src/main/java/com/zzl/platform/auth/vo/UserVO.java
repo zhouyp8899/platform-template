@@ -75,9 +75,19 @@ public class UserVO {
     private DataScopeType dataScope;
 
     /**
-     * 状态
+     * 状态: 1-正常, 2-禁用, 3-锁定
      */
     private UserStatus status;
+
+    /**
+     * 状态描述
+     */
+    private String statusDesc;
+
+    /**
+     * 角色ID列表（编辑时回显）
+     */
+    private List<Long> roleIds;
 
     /**
      * 角色编码列表
@@ -88,6 +98,16 @@ public class UserVO {
      * 角色名称列表
      */
     private List<String> roleNames;
+
+    /**
+     * 锁定时间
+     */
+    private LocalDateTime lockTime;
+
+    /**
+     * 登录失败次数
+     */
+    private Integer loginFailCount;
 
     /**
      * 最后登录时间
